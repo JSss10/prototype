@@ -3,6 +3,7 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { User } from "@supabase/supabase-js";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type AuthProps = {
   user: User | null;
@@ -17,6 +18,7 @@ export default function Auth({ user }: AuthProps) {
   const [status, setStatus] = useState("");
   const supabase = getSupabaseBrowserClient();
   const [currentUser, setCurrentUser] = useState<User | null>(user);
+  const router = useRouter();
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -28,13 +30,16 @@ export default function Auth({ user }: AuthProps) {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setCurrentUser(session?.user ?? null);
+        if (session?.user) {
+          router.push("/dashboard");
+        }
       }
     );
 
     return () => {
       listener?.subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [supabase, router]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,6 +66,7 @@ export default function Auth({ user }: AuthProps) {
         setStatus(error.message);
       } else {
         setStatus("Signed in successfully");
+        router.push("/dashboard");
       }
     }
   }
@@ -69,7 +75,7 @@ export default function Auth({ user }: AuthProps) {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}`,
+        redirectTo: `${window.location.origin}/dashboard`,
         skipBrowserRedirect: false,
       },
     });
