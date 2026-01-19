@@ -3,7 +3,7 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: ".env" });
 
 const ZURICH_API_BASE = "https://www.zuerich.com/en/api/v2/data";
 const SUPABASE_URL = process.env.SUPABASE_URL;
