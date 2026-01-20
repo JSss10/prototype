@@ -121,11 +121,57 @@ struct ARLandmarkView: View {
     private func landmarkInfoCard(_ landmark: Landmark) -> some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
+                if isLoadingPhotos {
+                    ZStack {
+                        Color.clear
+                        ProgressView()
+                    }
+                    .frame(height: 180)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 16)
+                } else if !landmarkPhotos.isEmpty {
+                    photoCarousel()
+                        .padding(.bottom, 16)
+                        .onTapGesture {
+                            showingDetail = true
+                        }
+                } else if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
+                    AsyncImage(url: URL(string: imageUrl)) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(height: 180)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(height: 180)
+                                .clipped()
+                        case .failure:
+                            EmptyView()
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .padding(.bottom, 16)
+                    .onTapGesture {
+                        showingDetail = true
+                    }
+                }
+
                 VStack(alignment: .leading, spacing: 0) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(landmark.name)
                             .font(.system(size: 28, weight: .bold))
                             .foregroundColor(.primary)
+
+                        HStack(spacing: 4) {
+                            if let category = landmark.category {
+                                Text(category.name)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
@@ -139,7 +185,7 @@ struct ARLandmarkView: View {
                             openDirections(to: landmark)
                         } label: {
                             VStack(spacing: 4) {
-                                Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
+                                Image(systemName: "figure.walk.circle.fill")
                                     .font(.system(size: 24))
                                 Text("Directions")
                                     .font(.system(size: 12, weight: .medium))
@@ -194,17 +240,9 @@ struct ARLandmarkView: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 24)
-   
-                    if !landmarkPhotos.isEmpty {
-                        photoCarousel()
-                            .padding(.bottom, 16)
-                            .onTapGesture {
-                                showingDetail = true
-                            }
-                    }
                 }
             }
-            .padding(.horizontal, 8)
+            .padding(.bottom, 8)
         }
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -248,18 +286,18 @@ struct ARLandmarkView: View {
     private func openDirections(to landmark: Landmark) {
         let coordinate = "\(landmark.latitude),\(landmark.longitude)"
         if let url = URL(string: "maps://?daddr=\(coordinate)&dirflg=w") {
-            UIApplication.shared.open(url)
+            UIApplication.shared.open(url, options: [:])
         }
     }
 
     private func callPhone(_ phone: String) {
         if let url = URL(string: "tel://\(phone.filter { $0.isNumber })") {
-            UIApplication.shared.open(url)
+            UIApplication.shared.open(url, options: [:])
         }
     }
 
     private func openWebsite(_ url: URL) {
-        UIApplication.shared.open(url)
+        UIApplication.shared.open(url, options: [:])
     }
     
     private var modeSwitcher: some View {
@@ -315,6 +353,58 @@ struct ARLandmarkView: View {
         }
         isLoadingPhotos = false
     }
+
+    private func decodeHTMLEntities(_ text: String) -> String {
+        var result = text
+
+        let entities: [String: String] = [
+            "&ndash;": "–",
+            "&mdash;": "—",
+            "&rsquo;": "'",
+            "&lsquo;": "'",
+            "&rdquo;": "\u{201D}",
+            "&ldquo;": "\u{201C}",
+            "&quot;": "\"",
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&nbsp;": " ",
+            "&uuml;": "ü",
+            "&ouml;": "ö",
+            "&auml;": "ä",
+            "&Uuml;": "Ü",
+            "&Ouml;": "Ö",
+            "&Auml;": "Ä",
+            "&szlig;": "ß",
+            "&#39;": "'",
+            "&apos;": "'"
+        ]
+
+        for (entity, replacement) in entities {
+            result = result.replacingOccurrences(of: entity, with: replacement)
+        }
+
+        let pattern = "&#(\\d+);"
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let nsString = result as NSString
+            let matches = regex.matches(in: result, range: NSRange(location: 0, length: nsString.length))
+
+            for match in matches.reversed() {
+                if match.numberOfRanges > 1 {
+                    let numberRange = match.range(at: 1)
+                    let numberString = nsString.substring(with: numberRange)
+                    if let number = Int(numberString),
+                       let scalar = UnicodeScalar(number) {
+                        let character = String(Character(scalar))
+                        let fullRange = match.range
+                        result = (result as NSString).replacingCharacters(in: fullRange, with: character)
+                    }
+                }
+            }
+        }
+
+        return result
+    }
 }
 
 // MARK: - Landmark Detail Sheet
@@ -330,9 +420,36 @@ struct LandmarkDetailSheet: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    if !photos.isEmpty {
+                    if isLoadingPhotos {
+                        ZStack {
+                            Color.clear
+                            ProgressView()
+                        }
+                        .frame(height: 240)
+                        .frame(maxWidth: .infinity)
+                        .padding(.bottom, 24)
+                    } else if !photos.isEmpty {
                         photoGallery
                             .padding(.bottom, 24)
+                    } else if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
+                        AsyncImage(url: URL(string: imageUrl)) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(height: 240)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 240)
+                                    .clipped()
+                            case .failure:
+                                EmptyView()
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        .padding(.bottom, 24)
                     }
 
                     VStack(alignment: .leading, spacing: 0) {
@@ -367,7 +484,7 @@ struct LandmarkDetailSheet: View {
                                     .font(.system(size: 22, weight: .bold))
                                     .foregroundColor(.primary)
 
-                                Text(description)
+                                Text(decodeHTMLEntities(description))
                                     .font(.system(size: 16))
                                     .foregroundColor(.primary)
                                     .lineSpacing(5)
@@ -399,7 +516,7 @@ struct LandmarkDetailSheet: View {
             if let phone = landmark.phone {
                 Button {
                     if let url = URL(string: "tel:\(phone)") {
-                        UIApplication.shared.open(url)
+                        UIApplication.shared.open(url, options: [:])
                     }
                 } label: {
                     HStack {
@@ -423,7 +540,7 @@ struct LandmarkDetailSheet: View {
             if let email = landmark.email {
                 Button {
                     if let url = URL(string: "mailto:\(email)") {
-                        UIApplication.shared.open(url)
+                        UIApplication.shared.open(url, options: [:])
                     }
                 } label: {
                     HStack {
@@ -448,7 +565,7 @@ struct LandmarkDetailSheet: View {
             if let website = landmark.websiteUrl {
                 Button {
                     if let url = URL(string: website) {
-                        UIApplication.shared.open(url)
+                        UIApplication.shared.open(url, options: [:])
                     }
                 } label: {
                     HStack {
@@ -595,6 +712,58 @@ struct LandmarkDetailSheet: View {
     private func formatOpeningHours(_ hours: String) -> String {
         hours.replacingOccurrences(of: ";", with: "\n")
             .replacingOccurrences(of: "|", with: "\n")
+    }
+
+    private func decodeHTMLEntities(_ text: String) -> String {
+        var result = text
+
+        let entities: [String: String] = [
+            "&ndash;": "–",
+            "&mdash;": "—",
+            "&rsquo;": "'",
+            "&lsquo;": "'",
+            "&rdquo;": "\u{201D}",
+            "&ldquo;": "\u{201C}",
+            "&quot;": "\"",
+            "&amp;": "&",
+            "&lt;": "<",
+            "&gt;": ">",
+            "&nbsp;": " ",
+            "&uuml;": "ü",
+            "&ouml;": "ö",
+            "&auml;": "ä",
+            "&Uuml;": "Ü",
+            "&Ouml;": "Ö",
+            "&Auml;": "Ä",
+            "&szlig;": "ß",
+            "&#39;": "'",
+            "&apos;": "'"
+        ]
+
+        for (entity, replacement) in entities {
+            result = result.replacingOccurrences(of: entity, with: replacement)
+        }
+
+        let pattern = "&#(\\d+);"
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let nsString = result as NSString
+            let matches = regex.matches(in: result, range: NSRange(location: 0, length: nsString.length))
+
+            for match in matches.reversed() {
+                if match.numberOfRanges > 1 {
+                    let numberRange = match.range(at: 1)
+                    let numberString = nsString.substring(with: numberRange)
+                    if let number = Int(numberString),
+                       let scalar = UnicodeScalar(number) {
+                        let character = String(Character(scalar))
+                        let fullRange = match.range
+                        result = (result as NSString).replacingCharacters(in: fullRange, with: character)
+                    }
+                }
+            }
+        }
+
+        return result
     }
 
     private func detailRow(icon: String, title: String, value: String) -> some View {
