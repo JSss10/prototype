@@ -24,6 +24,9 @@ struct ARViewContainer: UIViewRepresentable {
         config.worldAlignment = .gravityAndHeading
         arView.session.run(config)
 
+        // Set delegate to capture frames
+        arView.session.delegate = context.coordinator
+
         context.coordinator.arView = arView
         context.coordinator.landmarks = landmarks
         context.coordinator.startLocationUpdates()
@@ -57,7 +60,7 @@ struct ARViewContainer: UIViewRepresentable {
 
     // MARK: - Coordinator
 
-    class Coordinator: NSObject, CLLocationManagerDelegate {
+    class Coordinator: NSObject, CLLocationManagerDelegate, ARSessionDelegate {
         var parent: ARViewContainer
         var arView: ARView?
         var landmarks: [Landmark] = []
@@ -66,6 +69,7 @@ struct ARViewContainer: UIViewRepresentable {
         private let locationManager = CLLocationManager()
         private var currentLocation: CLLocation?
         private var currentHeading: CLHeading?
+        private var lastVisionProcessTime: Date = .distantPast
 
         init(_ parent: ARViewContainer) {
             self.parent = parent
@@ -112,6 +116,30 @@ struct ARViewContainer: UIViewRepresentable {
 
         func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
             print("Location error: \(error.localizedDescription)")
+        }
+
+        // MARK: - ARSessionDelegate
+
+        func session(_ session: ARSession, didUpdate frame: ARFrame) {
+            // Only process frames when in visual recognition mode
+            guard parent.modeManager.currentMode == .visualRecognition else { return }
+
+            // Throttle processing to avoid overwhelming the device
+            let now = Date()
+            guard now.timeIntervalSince(lastVisionProcessTime) >= 0.5 else { return }
+            lastVisionProcessTime = now
+
+            // Get the camera frame
+            let pixelBuffer = frame.capturedImage
+
+            // Process vision recognition asynchronously
+            Task { @MainActor in
+                if let result = await parent.modeManager.visionService.classifyImage(pixelBuffer) {
+                    parent.modeManager.handleRecognition(result, landmarks: landmarks)
+                } else {
+                    parent.modeManager.handleNoRecognition()
+                }
+            }
         }
 
         // MARK: - POI Management
