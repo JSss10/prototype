@@ -34,6 +34,11 @@ def get_wikimedia_image(query, image_size='1024'):
     """
     url = "https://commons.wikimedia.org/w/api.php"
 
+    # Wikimedia requires a User-Agent header
+    headers = {
+        'User-Agent': 'ARLandmarksApp/1.0 (ML Training; Educational Use) Python/requests'
+    }
+
     params = {
         'action': 'query',
         'format': 'json',
@@ -47,7 +52,7 @@ def get_wikimedia_image(query, image_size='1024'):
     }
 
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, headers=headers, timeout=10)
         response.raise_for_status()
         data = response.json()
 
@@ -67,8 +72,12 @@ def get_wikimedia_image(query, image_size='1024'):
 
 def download_image(url, output_path, timeout=15):
     """Download a single image."""
+    headers = {
+        'User-Agent': 'ARLandmarksApp/1.0 (ML Training; Educational Use) Python/requests'
+    }
+
     try:
-        response = requests.get(url, timeout=timeout, stream=True)
+        response = requests.get(url, timeout=timeout, stream=True, headers=headers)
         response.raise_for_status()
 
         with open(output_path, 'wb') as f:
