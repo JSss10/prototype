@@ -227,7 +227,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
 
   const inputClass = "w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all text-slate-900 dark:text-white"
   const labelClass = "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-  const tabClass = (tab: string) => `px-4 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === tab ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`
+  const tabClass = (tab: string) => `px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-all ${activeTab === tab ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`
 
   return (
     <Modal
@@ -603,7 +603,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
             </div>
 
             {formData.image_url && (
-              <div className="relative aspect-video bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
+              <div className="relative aspect-video max-h-48 sm:max-h-64 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden">
                 <img
                   src={formData.image_url}
                   alt="Main image preview"
@@ -615,11 +615,11 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
 
             <hr className="border-slate-200 dark:border-slate-700" />
 
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Photo Gallery</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white">Photo Gallery</h3>
 
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
+            <div className="p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
               <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">Photo 1</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-3">
                 <div>
                   <label className="text-xs text-slate-500">URL</label>
                   <input
@@ -645,15 +645,15 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                 <img
                   src={formData.photo_0_url}
                   alt="Photo 1 preview"
-                  className="h-24 w-auto rounded-lg object-cover"
+                  className="h-20 sm:h-24 w-auto max-w-full rounded-lg object-cover"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
+            <div className="p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
               <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">Photo 2</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-3">
                 <div>
                   <label className="text-xs text-slate-500">URL</label>
                   <input
@@ -679,15 +679,15 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                 <img
                   src={formData.photo_1_url}
                   alt="Photo 2 preview"
-                  className="h-24 w-auto rounded-lg object-cover"
+                  className="h-20 sm:h-24 w-auto max-w-full rounded-lg object-cover"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
+            <div className="p-3 sm:p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-3">
               <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">Photo 3</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-3">
                 <div>
                   <label className="text-xs text-slate-500">URL</label>
                   <input
@@ -713,7 +713,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                 <img
                   src={formData.photo_2_url}
                   alt="Photo 3 preview"
-                  className="h-24 w-auto rounded-lg object-cover"
+                  className="h-20 sm:h-24 w-auto max-w-full rounded-lg object-cover"
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
               )}
@@ -721,19 +721,19 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
           </div>
         )}
 
-        <div className="flex justify-end space-x-3 pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
           <button
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+            className="px-4 sm:px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20 text-sm sm:text-base"
           >
             {loading ? 'Saving...' : 'Update Landmark'}
           </button>
