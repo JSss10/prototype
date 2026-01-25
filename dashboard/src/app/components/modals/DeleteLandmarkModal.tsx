@@ -86,14 +86,6 @@ export default function DeleteLandmarkModal({ isOpen, onClose, onSuccess, landma
                 <span className="ml-2 text-sm text-slate-900 dark:text-white">{landmark.name_en}</span>
               </div>
             )}
-            {landmark.category && (
-              <div>
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Category:</span>
-                <span className="ml-2 text-sm text-slate-900 dark:text-white">
-                  {landmark.category.icon} {landmark.category.name}
-                </span>
-              </div>
-            )}
           </div>
         </div>
 

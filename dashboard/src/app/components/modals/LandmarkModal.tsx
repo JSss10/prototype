@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from 'react'
 import Modal from './Modal'
-import { Landmark, Category } from '@/lib/supabase/types'
+import { Landmark } from '@/lib/supabase/types'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
 
 interface LandmarkModalProps {
@@ -10,7 +10,6 @@ interface LandmarkModalProps {
   onClose: () => void
   onSuccess: () => void
   landmark?: Landmark | null
-  categories: Category[]
 }
 
 function formatDateForDisplay(dateString: string | null | undefined): string {
@@ -58,16 +57,14 @@ function parseOpeningHours(hours: string | null | undefined): string {
   return hours
 }
 
-export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, categories }: LandmarkModalProps) {
+export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: LandmarkModalProps) {
   const isEditMode = !!landmark
   const supabase = getSupabaseBrowserClient()
 
   const [formData, setFormData] = useState({
     name: '',
     name_en: '',
-    disambiguating_description: '',
     description: '',
-    description_en: '',
     title_teaser: '',
     text_teaser: '',
     detailed_information: '',
@@ -76,7 +73,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
     latitude: '',
     longitude: '',
     altitude: '',
-    category_id: '',
     api_categories: '',
     image_url: '',
     image_caption: '',
@@ -112,9 +108,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
       setFormData({
         name: landmark.name || '',
         name_en: landmark.name_en || '',
-        disambiguating_description: landmark.disambiguating_description || '',
-        description: landmark.description || '',
-        description_en: landmark.description_en || '',
+        description: landmark.description_en || landmark.description || '',
         title_teaser: landmark.title_teaser || '',
         text_teaser: landmark.text_teaser || '',
         detailed_information: Array.isArray(landmark.detailed_information)
@@ -125,7 +119,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
         latitude: landmark.latitude?.toString() || '',
         longitude: landmark.longitude?.toString() || '',
         altitude: landmark.altitude?.toString() || '',
-        category_id: landmark.category_id || '',
         api_categories: Array.isArray(landmark.api_categories)
           ? landmark.api_categories.join(', ')
           : '',
@@ -157,9 +150,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
       setFormData({
         name: '',
         name_en: '',
-        disambiguating_description: '',
         description: '',
-        description_en: '',
         title_teaser: '',
         text_teaser: '',
         detailed_information: '',
@@ -168,7 +159,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
         latitude: '',
         longitude: '',
         altitude: '',
-        category_id: categories[0]?.id || '',
         api_categories: '',
         image_url: '',
         image_caption: '',
@@ -197,7 +187,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
     }
     setError('')
     setActiveTab('basic')
-  }, [landmark, categories, isOpen])
+  }, [landmark, isOpen])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -222,9 +212,8 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
       const landmarkData = {
         name: formData.name,
         name_en: formData.name_en || null,
-        disambiguating_description: formData.disambiguating_description || null,
         description: formData.description || null,
-        description_en: formData.description_en || null,
+        description_en: formData.description || null,
         title_teaser: formData.title_teaser || null,
         text_teaser: formData.text_teaser || null,
         detailed_information: detailedInfoArray.length > 0 ? detailedInfoArray : null,
@@ -233,7 +222,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
         latitude: parseFloat(formData.latitude),
         longitude: parseFloat(formData.longitude),
         altitude: parseFloat(formData.altitude),
-        category_id: formData.category_id || null,
         api_categories: apiCategoriesArray.length > 0 ? apiCategoriesArray : null,
         image_url: formData.image_url || null,
         image_caption: formData.image_caption || null,
@@ -342,22 +330,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
               </div>
 
               <div>
-                <label className={labelClass}>Category</label>
-                <select
-                  value={formData.category_id}
-                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                  className={inputClass}
-                >
-                  <option value="">No Category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.icon} {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
                 <label className={labelClass}>API Categories</label>
                 <input
                   type="text"
@@ -440,35 +412,13 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark, ca
         {activeTab === 'content' && (
           <div className="space-y-4">
             <div>
-              <label className={labelClass}>Disambiguating Description</label>
-              <textarea
-                value={formData.disambiguating_description}
-                onChange={(e) => setFormData({ ...formData, disambiguating_description: e.target.value })}
-                rows={2}
-                className={inputClass + " resize-none"}
-                placeholder="Short disambiguating description"
-              />
-            </div>
-
-            <div>
               <label className={labelClass}>Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
                 className={inputClass + " resize-none"}
-                placeholder="Full description (HTML will be stripped)"
-              />
-            </div>
-
-            <div>
-              <label className={labelClass}>Description (English)</label>
-              <textarea
-                value={formData.description_en}
-                onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-                rows={4}
-                className={inputClass + " resize-none"}
-                placeholder="English description"
+                placeholder="Full description"
               />
             </div>
 
