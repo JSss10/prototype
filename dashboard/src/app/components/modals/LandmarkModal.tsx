@@ -63,7 +63,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
 
   const [formData, setFormData] = useState({
     name: '',
-    name_en: '',
     description: '',
     title_teaser: '',
     text_teaser: '',
@@ -72,7 +71,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
     zurich_card: false,
     latitude: '',
     longitude: '',
-    altitude: '',
     api_categories: '',
     image_url: '',
     image_caption: '',
@@ -106,8 +104,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
   useEffect(() => {
     if (landmark) {
       setFormData({
-        name: landmark.name || '',
-        name_en: landmark.name_en || '',
+        name: landmark.name_en || landmark.name || '',
         description: landmark.description_en || landmark.description || '',
         title_teaser: landmark.title_teaser || '',
         text_teaser: landmark.text_teaser || '',
@@ -118,7 +115,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
         zurich_card: landmark.zurich_card ?? false,
         latitude: landmark.latitude?.toString() || '',
         longitude: landmark.longitude?.toString() || '',
-        altitude: landmark.altitude?.toString() || '',
         api_categories: Array.isArray(landmark.api_categories)
           ? landmark.api_categories.join(', ')
           : '',
@@ -149,7 +145,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
     } else {
       setFormData({
         name: '',
-        name_en: '',
         description: '',
         title_teaser: '',
         text_teaser: '',
@@ -158,7 +153,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
         zurich_card: false,
         latitude: '',
         longitude: '',
-        altitude: '',
         api_categories: '',
         image_url: '',
         image_caption: '',
@@ -195,7 +189,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
     setError('')
 
     try {
-      if (!formData.name || !formData.latitude || !formData.longitude || !formData.altitude) {
+      if (!formData.name || !formData.latitude || !formData.longitude) {
         throw new Error('Please fill in all required fields')
       }
 
@@ -211,7 +205,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
 
       const landmarkData = {
         name: formData.name,
-        name_en: formData.name_en || null,
+        name_en: formData.name,
         description: formData.description || null,
         description_en: formData.description || null,
         title_teaser: formData.title_teaser || null,
@@ -221,7 +215,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
         zurich_card: formData.zurich_card,
         latitude: parseFloat(formData.latitude),
         longitude: parseFloat(formData.longitude),
-        altitude: parseFloat(formData.altitude),
         api_categories: apiCategoriesArray.length > 0 ? apiCategoriesArray : null,
         image_url: formData.image_url || null,
         image_caption: formData.image_caption || null,
@@ -315,17 +308,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className={inputClass}
                   placeholder="Landmark name"
-                />
-              </div>
-
-              <div>
-                <label className={labelClass}>Name (English)</label>
-                <input
-                  type="text"
-                  value={formData.name_en}
-                  onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
-                  className={inputClass}
-                  placeholder="English name"
                 />
               </div>
 
@@ -473,7 +455,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
 
         {activeTab === 'location' && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className={labelClass}>
                   Latitude <span className="text-red-500">*</span>
@@ -501,21 +483,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                   onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
                   className={inputClass}
                   placeholder="8.5441"
-                />
-              </div>
-
-              <div>
-                <label className={labelClass}>
-                  Altitude (m) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  required
-                  value={formData.altitude}
-                  onChange={(e) => setFormData({ ...formData, altitude: e.target.value })}
-                  className={inputClass}
-                  placeholder="408"
                 />
               </div>
             </div>

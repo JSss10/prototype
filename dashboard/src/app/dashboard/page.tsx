@@ -242,10 +242,7 @@ export default function Home() {
                   <tr key={landmark.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-900">
-                        {landmark.name}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {landmark.name_en}
+                        {landmark.name_en || landmark.name}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
