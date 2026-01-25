@@ -25,7 +25,6 @@ export default function Home() {
   const [landmarks, setLandmarks] = useState<Landmark[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null)
@@ -147,15 +146,6 @@ export default function Home() {
                 </>
               )}
             </button>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all shadow-lg shadow-blue-500/20 flex items-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              <span>Create New Landmark</span>
-            </button>
           </div>
         </div>
 
@@ -249,12 +239,6 @@ export default function Home() {
             </table>
           </div>
         </div>
-
-        <LandmarkModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onSuccess={handleSuccess}
-        />
 
         <LandmarkModal
           isOpen={isEditModalOpen}

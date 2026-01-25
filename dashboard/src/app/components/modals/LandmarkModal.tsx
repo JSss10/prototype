@@ -10,7 +10,7 @@ interface LandmarkModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
-  landmark?: Landmark | null
+  landmark: Landmark | null
 }
 
 function formatDateForDisplay(dateString: string | null | undefined): string {
@@ -59,7 +59,6 @@ function parseOpeningHours(hours: string | null | undefined): string {
 }
 
 export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: LandmarkModalProps) {
-  const isEditMode = !!landmark
   const supabase = getSupabaseBrowserClient()
 
   const [formData, setFormData] = useState({
@@ -142,42 +141,6 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
         photo_2_url: landmark.photo_2_url || '',
         photo_2_caption: landmark.photo_2_caption || '',
       })
-    } else {
-      setFormData({
-        name: '',
-        description: '',
-        title_teaser: '',
-        text_teaser: '',
-        detailed_information: '',
-        zurich_card_description: '',
-        zurich_card: false,
-        latitude: '',
-        longitude: '',
-        api_categories: '',
-        image_url: '',
-        image_caption: '',
-        price: '',
-        zurich_tourism_id: '',
-        is_active: true,
-        date_modified: '',
-        opens: '',
-        opening_hours: '',
-        special_opening_hours: '',
-        address_country: '',
-        street_address: '',
-        postal_code: '',
-        city: '',
-        phone: '',
-        email: '',
-        website_url: '',
-        place: '',
-        photo_0_url: '',
-        photo_0_caption: '',
-        photo_1_url: '',
-        photo_1_caption: '',
-        photo_2_url: '',
-        photo_2_caption: '',
-      })
     }
     setActiveTab('basic')
   }, [landmark, isOpen])
@@ -240,24 +203,19 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
         updated_at: new Date().toISOString(),
       }
 
-      if (isEditMode) {
-        const { error: updateError } = await supabase
-          .from('landmarks')
-          // @ts-ignore - Supabase client has no schema types
-          .update(landmarkData)
-          .eq('id', landmark.id)
-
-        if (updateError) throw updateError
-      } else {
-        const { error: insertError } = await supabase
-          .from('landmarks')
-          // @ts-ignore - Supabase client has no schema types
-          .insert([{ ...landmarkData, created_at: new Date().toISOString() }])
-
-        if (insertError) throw insertError
+      if (!landmark) {
+        throw new Error('No landmark selected for editing')
       }
 
-      toast.success(isEditMode ? 'Landmark updated successfully' : 'Landmark created successfully')
+      const { error: updateError } = await supabase
+        .from('landmarks')
+        // @ts-ignore - Supabase client has no schema types
+        .update(landmarkData)
+        .eq('id', landmark.id)
+
+      if (updateError) throw updateError
+
+      toast.success('Landmark updated successfully')
       onSuccess()
       onClose()
     } catch (err) {
@@ -275,7 +233,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditMode ? 'Edit Landmark' : 'Create New Landmark'}
+      title="Edit Landmark"
       maxWidth="4xl"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -777,7 +735,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
             disabled={loading}
             className="px-6 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
           >
-            {loading ? 'Saving...' : isEditMode ? 'Update Landmark' : 'Create Landmark'}
+            {loading ? 'Saving...' : 'Update Landmark'}
           </button>
         </div>
       </form>
