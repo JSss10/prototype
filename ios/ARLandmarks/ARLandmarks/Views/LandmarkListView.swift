@@ -92,11 +92,12 @@ struct LandmarkListView: View {
         }
     }
 
-    // Deduplicate categories by name
+    // Deduplicate categories by name - combine from categories table and landmarks
     private var uniqueCategories: [Category] {
         var seen = Set<String>()
         var result: [Category] = []
 
+        // First add categories from the categories table
         for category in viewModel.categories.sorted(by: { $0.sortOrder < $1.sortOrder }) {
             if !seen.contains(category.name) {
                 seen.insert(category.name)
@@ -104,7 +105,16 @@ struct LandmarkListView: View {
             }
         }
 
-        return result
+        // Also extract categories from landmarks (in case categories table is empty)
+        for landmark in viewModel.landmarks {
+            if let category = landmark.category, !seen.contains(category.name) {
+                seen.insert(category.name)
+                result.append(category)
+            }
+        }
+
+        // Sort by sortOrder
+        return result.sorted { $0.sortOrder < $1.sortOrder }
     }
 
     private var categoryFilterBar: some View {
