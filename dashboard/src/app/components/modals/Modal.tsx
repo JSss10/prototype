@@ -70,7 +70,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'lg
           </div>
 
           {/* Content */}
-          <div className="px-4 sm:px-6 py-4 overflow-y-auto flex-1">
+          <div className="px-4 sm:px-6 py-4 overflow-y-auto flex-1 scrollbar-hide">
             {children}
           </div>
         </div>

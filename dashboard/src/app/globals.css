@@ -30,6 +30,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @supports (backdrop-filter: blur(40px)) or (-webkit-backdrop-filter: blur(40px)) {
   .backdrop-blur-2xl {
     backdrop-filter: blur(40px);
