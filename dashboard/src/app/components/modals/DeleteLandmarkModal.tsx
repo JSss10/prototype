@@ -75,25 +75,9 @@ export default function DeleteLandmarkModal({ isOpen, onClose, onSuccess, landma
         </div>
 
         <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-          <div className="space-y-2">
-            <div>
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Name:</span>
-              <span className="ml-2 text-sm text-slate-900 dark:text-white">{landmark.name}</span>
-            </div>
-            {landmark.name_en && (
-              <div>
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">English Name:</span>
-                <span className="ml-2 text-sm text-slate-900 dark:text-white">{landmark.name_en}</span>
-              </div>
-            )}
-            {landmark.category && (
-              <div>
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Category:</span>
-                <span className="ml-2 text-sm text-slate-900 dark:text-white">
-                  {landmark.category.icon} {landmark.category.name}
-                </span>
-              </div>
-            )}
+          <div>
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Name:</span>
+            <span className="ml-2 text-sm text-slate-900 dark:text-white">{landmark.name_en || landmark.name}</span>
           </div>
         </div>
 

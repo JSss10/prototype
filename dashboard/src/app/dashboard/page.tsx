@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client'
-import { Landmark, Category } from '@/lib/supabase/types'
+import { Landmark } from '@/lib/supabase/types'
 import LandmarkModal from '@/app/components/modals/LandmarkModal'
 import DeleteLandmarkModal from '@/app/components/modals/DeleteLandmarkModal'
 
@@ -22,7 +22,6 @@ function formatDateEnglish(dateString: string | null | undefined): string {
 
 export default function Home() {
   const [landmarks, setLandmarks] = useState<Landmark[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -39,23 +38,12 @@ export default function Home() {
       setLoading(true)
       const { data: landmarksData, error: landmarksError } = await supabase
         .from('landmarks')
-        .select(`
-          *,
-          category:categories(*)
-        `)
+        .select('*')
         .order('name')
 
       if (landmarksError) throw landmarksError
 
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('*')
-        .order('sort_order')
-
-      if (categoriesError) throw categoriesError
-
       setLandmarks(landmarksData || [])
-      setCategories(categoriesData || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'A error occurred')
     } finally {
@@ -209,18 +197,12 @@ export default function Home() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="text-2xl font-bold text-blue-600">
               {landmarks.length}
             </div>
             <div className="text-gray-600">Landmarks</div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-2xl font-bold text-green-600">
-              {categories.length}
-            </div>
-            <div className="text-gray-600">Categories</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="text-2xl font-bold text-purple-600">
@@ -242,9 +224,6 @@ export default function Home() {
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Coordinates
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -263,24 +242,8 @@ export default function Home() {
                   <tr key={landmark.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-900">
-                        {landmark.name}
+                        {landmark.name_en || landmark.name}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {landmark.name_en}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {landmark.category && (
-                        <span
-                          className="px-2 py-1 text-xs rounded-full"
-                          style={{
-                            backgroundColor: `${landmark.category.color}20`,
-                            color: landmark.category.color
-                          }}
-                        >
-                          {landmark.category.icon} {landmark.category.name}
-                        </span>
-                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {landmark.latitude.toFixed(4)}, {landmark.longitude.toFixed(4)}
@@ -329,7 +292,6 @@ export default function Home() {
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={handleSuccess}
-          categories={categories}
         />
 
         <LandmarkModal
@@ -337,7 +299,6 @@ export default function Home() {
           onClose={() => setIsEditModalOpen(false)}
           onSuccess={handleSuccess}
           landmark={selectedLandmark}
-          categories={categories}
         />
 
         <DeleteLandmarkModal
