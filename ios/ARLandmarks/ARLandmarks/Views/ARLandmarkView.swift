@@ -116,14 +116,8 @@ struct ARLandmarkView: View {
     private func landmarkInfoCard(_ landmark: Landmark) -> some View {
         VStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
-                // Use photos from landmark model (photo_0, photo_1, photo_2 fields)
-                if !landmark.photos.isEmpty {
-                    photoCarousel(photos: landmark.photos)
-                        .padding(.bottom, 16)
-                        .onTapGesture {
-                            showingDetail = true
-                        }
-                } else if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
+                // Show only main image in the info card
+                if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
                     AsyncImage(url: URL(string: imageUrl)) { phase in
                         switch phase {
                         case .empty:
@@ -381,6 +375,33 @@ struct ARLandmarkView: View {
 
         return result
     }
+
+    private func stripHTMLTags(_ text: String) -> String {
+        var result = text
+
+        // Remove HTML tags
+        let tagPattern = "<[^>]+>"
+        if let regex = try? NSRegularExpression(pattern: tagPattern, options: [.caseInsensitive]) {
+            result = regex.stringByReplacingMatches(
+                in: result,
+                range: NSRange(location: 0, length: result.utf16.count),
+                withTemplate: " "
+            )
+        }
+
+        // Decode HTML entities
+        result = decodeHTMLEntities(result)
+
+        // Clean up multiple spaces
+        while result.contains("  ") {
+            result = result.replacingOccurrences(of: "  ", with: " ")
+        }
+
+        // Trim whitespace
+        result = result.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return result
+    }
 }
 
 // MARK: - Landmark Detail Sheet
@@ -394,11 +415,8 @@ struct LandmarkDetailSheet: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Photo gallery from landmark model
-                    if !landmark.photos.isEmpty {
-                        photoGallery
-                            .padding(.bottom, 24)
-                    } else if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
+                    // Main image at top
+                    if let imageUrl = landmark.imageUrl, !imageUrl.isEmpty {
                         AsyncImage(url: URL(string: imageUrl)) { phase in
                             switch phase {
                             case .empty:
@@ -474,6 +492,12 @@ struct LandmarkDetailSheet: View {
                             }
                             .padding(.horizontal, 20)
                             .padding(.bottom, 32)
+                        }
+
+                        // Photo gallery under About section (without captions)
+                        if !landmark.photos.isEmpty {
+                            photoGallery
+                                .padding(.bottom, 32)
                         }
 
                         // Highlights section (detailedInformation) - FULL WIDTH
@@ -553,7 +577,7 @@ struct LandmarkDetailSheet: View {
                     .foregroundColor(.green)
                     .frame(width: 24)
 
-                Text(price)
+                Text(stripHTMLTags(price))
                     .font(.system(size: 16))
                     .foregroundColor(.primary)
 
@@ -720,39 +744,28 @@ struct LandmarkDetailSheet: View {
             HStack(spacing: 16) {
                 ForEach(landmark.photos.indices, id: \.self) { index in
                     let photo = landmark.photos[index]
-                    VStack(alignment: .leading, spacing: 8) {
-                        AsyncImage(url: URL(string: photo.url)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
+                    AsyncImage(url: URL(string: photo.url)) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(width: 320, height: 240)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 320, height: 240)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        case .failure:
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.gray.opacity(0.15))
                                     .frame(width: 320, height: 240)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 320, height: 240)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                            case .failure:
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.gray.opacity(0.15))
-                                        .frame(width: 320, height: 240)
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 48))
-                                        .foregroundColor(.secondary)
-                                }
-                            @unknown default:
-                                EmptyView()
+                                Image(systemName: "photo")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(.secondary)
                             }
-                        }
-
-                        // Show caption if available
-                        if let caption = photo.caption, !caption.isEmpty {
-                            Text(caption)
-                                .font(.system(size: 12))
-                                .foregroundColor(.secondary)
-                                .lineLimit(2)
-                                .frame(width: 320, alignment: .leading)
+                        @unknown default:
+                            EmptyView()
                         }
                     }
                 }
@@ -779,7 +792,7 @@ struct LandmarkDetailSheet: View {
                         .foregroundColor(.blue)
                         .frame(width: 24)
 
-                    Text(hours)
+                    Text(stripHTMLTags(hours))
                         .font(.system(size: 16))
                         .foregroundColor(.primary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -843,6 +856,33 @@ struct LandmarkDetailSheet: View {
                 }
             }
         }
+
+        return result
+    }
+
+    private func stripHTMLTags(_ text: String) -> String {
+        var result = text
+
+        // Remove HTML tags
+        let tagPattern = "<[^>]+>"
+        if let regex = try? NSRegularExpression(pattern: tagPattern, options: [.caseInsensitive]) {
+            result = regex.stringByReplacingMatches(
+                in: result,
+                range: NSRange(location: 0, length: result.utf16.count),
+                withTemplate: " "
+            )
+        }
+
+        // Decode HTML entities
+        result = decodeHTMLEntities(result)
+
+        // Clean up multiple spaces
+        while result.contains("  ") {
+            result = result.replacingOccurrences(of: "  ", with: " ")
+        }
+
+        // Trim whitespace
+        result = result.trimmingCharacters(in: .whitespacesAndNewlines)
 
         return result
     }
