@@ -15,7 +15,7 @@ struct LandmarkListView: View {
         NavigationStack {
             Group {
                 if viewModel.isLoading {
-                    ProgressView("Laden...")
+                    ProgressView("Loading...")
                 } else if let error = viewModel.errorMessage {
                     VStack(spacing: 16) {
                         Image(systemName: "exclamationmark.triangle")
@@ -24,7 +24,7 @@ struct LandmarkListView: View {
                         Text(error)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
-                        Button("Erneut versuchen") {
+                        Button("Try Again") {
                             Task { await viewModel.loadData() }
                         }
                         .buttonStyle(.borderedProminent)
@@ -60,7 +60,7 @@ struct LandmarkListView: View {
                     selectedCategories.removeAll()
                 } label: {
                     HStack(spacing: 4) {
-                        Text("Alle")
+                        Text("All")
                             .font(.system(size: 14, weight: .medium))
                     }
                     .padding(.horizontal, 12)
