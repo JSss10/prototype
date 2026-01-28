@@ -317,11 +317,33 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
   const labelClass = "block text-[13px] font-medium text-gray-500 mb-1.5"
 
   const tabs = [
-    { id: 'basic', label: 'Basic' },
-    { id: 'content', label: 'Content' },
-    { id: 'location', label: 'Location' },
-    { id: 'hours', label: 'Hours' },
-    { id: 'photos', label: 'Photos' },
+    { id: 'basic', label: 'Basic', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+      </svg>
+    )},
+    { id: 'content', label: 'Content', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+      </svg>
+    )},
+    { id: 'location', label: 'Location', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+      </svg>
+    )},
+    { id: 'hours', label: 'Hours', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+    )},
+    { id: 'photos', label: 'Photos', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+    )},
   ] as const
 
   return (
@@ -334,19 +356,22 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Segmented Control Tabs */}
         <div className="flex justify-center pb-2">
-          <div className="inline-flex bg-gray-100 rounded-xl p-1 gap-0.5">
+          <div className="inline-flex bg-gradient-to-b from-gray-100 to-gray-100/80 rounded-2xl p-1.5 gap-1 shadow-inner ring-1 ring-black/[0.04]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 text-[13px] font-semibold rounded-lg transition-all duration-200 ${
+                className={`relative flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold rounded-xl transition-all duration-300 ease-out ${
                   activeTab === tab.id
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-white text-gray-900 shadow-md shadow-black/[0.08] ring-1 ring-black/[0.04]'
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
                 }`}
               >
-                {tab.label}
+                <span className={`transition-colors duration-300 ${activeTab === tab.id ? 'text-blue-500' : ''}`}>
+                  {tab.icon}
+                </span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </div>
