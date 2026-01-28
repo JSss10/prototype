@@ -23,6 +23,32 @@ function formatDateEnglish(dateString: string | null | undefined): string {
   }
 }
 
+function getUserInitials(user: User | null): string {
+  if (!user) return '?'
+
+  // Try to get name from user metadata (Google sign-in provides full_name or name)
+  const fullName = user.user_metadata?.full_name || user.user_metadata?.name
+  if (fullName) {
+    const parts = fullName.trim().split(' ')
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    }
+    return fullName[0].toUpperCase()
+  }
+
+  // Fallback to email
+  if (user.email) {
+    return user.email[0].toUpperCase()
+  }
+
+  return '?'
+}
+
+function getUserAvatarUrl(user: User | null): string | null {
+  if (!user) return null
+  return user.user_metadata?.avatar_url || user.user_metadata?.picture || null
+}
+
 export default function Home() {
   const [landmarks, setLandmarks] = useState<Landmark[]>([])
   const [loading, setLoading] = useState(true)
@@ -182,12 +208,21 @@ export default function Home() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-b from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 border border-gray-300/50 shadow-sm transition-all active:scale-95"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-b from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 border border-gray-300/50 shadow-sm transition-all active:scale-95 overflow-hidden"
                   title={user?.email || 'Profile'}
                 >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                  </svg>
+                  {getUserAvatarUrl(user) ? (
+                    <img
+                      src={getUserAvatarUrl(user)!}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="text-sm font-semibold text-gray-600">
+                      {getUserInitials(user)}
+                    </span>
+                  )}
                 </button>
 
                 {/* Dropdown Menu */}
