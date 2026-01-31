@@ -218,6 +218,22 @@ struct ARLandmarkView: View {
                                 .cornerRadius(12)
                             }
                         }
+
+                        Button {
+                            showingDetail = true
+                        } label: {
+                            VStack(spacing: 4) {
+                                Image(systemName: "info.circle.fill")
+                                    .font(.system(size: 24))
+                                Text("Info")
+                                    .font(.system(size: 12, weight: .medium))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Color(uiColor: .secondarySystemFill))
+                            .foregroundColor(.blue)
+                            .cornerRadius(12)
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 24)
