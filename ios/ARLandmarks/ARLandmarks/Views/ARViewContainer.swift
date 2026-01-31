@@ -208,18 +208,133 @@ struct ARViewContainer: UIViewRepresentable {
 
             let anchorEntity = AnchorEntity(world: position)
 
-            let color = UIColor(Color(hex: landmark.category?.color ?? "#3B82F6"))
-            let sphere = MeshResource.generateSphere(radius: 0.15)
-            let material = SimpleMaterial(color: color, roughness: 0.3, isMetallic: false)
-            let sphereEntity = ModelEntity(mesh: sphere, materials: [material])
+            let markerEntity = createBillboardMarker(for: landmark)
+            markerEntity.name = landmark.id
+            markerEntity.generateCollisionShapes(recursive: true)
 
-            sphereEntity.name = landmark.id
-            sphereEntity.generateCollisionShapes(recursive: false)
-
-            anchorEntity.addChild(sphereEntity)
+            anchorEntity.addChild(markerEntity)
             arView.scene.addAnchor(anchorEntity)
 
             print("POI created: \(landmark.name) at \(position) with ID \(landmark.id)")
+        }
+
+        private func createBillboardMarker(for landmark: Landmark) -> ModelEntity {
+            let placeholderImage = renderMarker(for: landmark, with: nil)
+
+            let plane = MeshResource.generatePlane(width: 0.25, height: 0.25)
+
+            var material = UnlitMaterial()
+            if let cgImage = placeholderImage.cgImage {
+                if let texture = try? TextureResource(image: cgImage, options: .init(semantic: .color)) {
+                    material.color = .init(texture: .init(texture))
+                }
+            }
+            material.blending = .transparent(opacity: 1.0)
+
+            let entity = ModelEntity(mesh: plane, materials: [material])
+
+            entity.components.set(BillboardComponent())
+
+            if let imageUrlString = landmark.imageUrl, let imageUrl = URL(string: imageUrlString) {
+                loadImage(from: imageUrl) { [weak self, weak entity] loadedImage in
+                    guard let self = self, let entity = entity, let loadedImage = loadedImage else { return }
+
+                    DispatchQueue.main.async {
+                        let markerImage = self.renderMarker(for: landmark, with: loadedImage)
+
+                        var updatedMaterial = UnlitMaterial()
+                        if let cgImage = markerImage.cgImage {
+                            if let texture = try? TextureResource(image: cgImage, options: .init(semantic: .color)) {
+                                updatedMaterial.color = .init(texture: .init(texture))
+                            }
+                        }
+                        updatedMaterial.blending = .transparent(opacity: 1.0)
+                        entity.model?.materials = [updatedMaterial]
+                    }
+                }
+            }
+
+            return entity
+        }
+
+        private func loadImage(from url: URL, completion: @escaping @Sendable (UIImage?) -> Void) {
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                if let error = error {
+                    print("Failed to load image: \(error.localizedDescription)")
+                    completion(nil)
+                    return
+                }
+
+                if let data = data, let image = UIImage(data: data) {
+                    completion(image)
+                } else {
+                    completion(nil)
+                }
+            }.resume()
+        }
+
+        private func renderMarker(for landmark: Landmark, with landmarkImage: UIImage?) -> UIImage {
+            let circleSize: CGFloat = 100
+            let borderWidth: CGFloat = 4
+            let padding: CGFloat = 8
+            let size = CGSize(width: circleSize + borderWidth * 2 + padding * 2, height: circleSize + borderWidth * 2 + padding * 2)
+            let renderer = UIGraphicsImageRenderer(size: size)
+
+            return renderer.image { context in
+                let ctx = context.cgContext
+
+                let circleX = padding + borderWidth
+                let circleY = padding + borderWidth
+
+                ctx.saveGState()
+                ctx.setShadow(offset: CGSize(width: 0, height: 4), blur: 10, color: UIColor.black.withAlphaComponent(0.4).cgColor)
+
+                let outerCircleRect = CGRect(x: circleX - borderWidth, y: circleY - borderWidth, width: circleSize + borderWidth * 2, height: circleSize + borderWidth * 2)
+                let outerCirclePath = UIBezierPath(ovalIn: outerCircleRect)
+                UIColor.white.setFill()
+                outerCirclePath.fill()
+
+                ctx.restoreGState()
+
+                let innerCircleRect = CGRect(x: circleX, y: circleY, width: circleSize, height: circleSize)
+                let innerCirclePath = UIBezierPath(ovalIn: innerCircleRect)
+
+                ctx.saveGState()
+                innerCirclePath.addClip()
+
+                if let image = landmarkImage {
+                    let imageRect = aspectFillRect(for: image.size, in: innerCircleRect)
+                    image.draw(in: imageRect)
+                } else {
+                    let color = UIColor(Color(hex: landmark.category?.color ?? "#3B82F6"))
+                    color.setFill()
+                    UIRectFill(innerCircleRect)
+
+                    let iconName = landmark.category?.icon ?? "mappin.circle.fill"
+                    let symbolConfig = UIImage.SymbolConfiguration(pointSize: 40, weight: .medium)
+                    if let symbolImage = UIImage(systemName: iconName, withConfiguration: symbolConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal) {
+                        let iconSize = CGSize(width: 50, height: 50)
+                        let iconOrigin = CGPoint(x: circleX + (circleSize - iconSize.width) / 2, y: circleY + (circleSize - iconSize.height) / 2)
+                        symbolImage.draw(in: CGRect(origin: iconOrigin, size: iconSize))
+                    }
+                }
+
+                ctx.restoreGState()
+            }
+        }
+
+        private func aspectFillRect(for imageSize: CGSize, in targetRect: CGRect) -> CGRect {
+            let widthRatio = targetRect.width / imageSize.width
+            let heightRatio = targetRect.height / imageSize.height
+            let scale = max(widthRatio, heightRatio)
+
+            let scaledWidth = imageSize.width * scale
+            let scaledHeight = imageSize.height * scale
+
+            let x = targetRect.origin.x - (scaledWidth - targetRect.width) / 2
+            let y = targetRect.origin.y - (scaledHeight - targetRect.height) / 2
+
+            return CGRect(x: x, y: y, width: scaledWidth, height: scaledHeight)
         }
 
         private func calculateBearing(from: CLLocation, to: CLLocation) -> Double {
