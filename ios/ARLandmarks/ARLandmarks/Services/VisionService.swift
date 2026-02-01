@@ -41,9 +41,6 @@ class VisionService: ObservableObject {
         } catch {
             self.error = "Model could not be loaded: \(error.localizedDescription)"
         }
-        */
-        print("Vision Model: Waiting for trained Create ML Model")
-        model = nil
     }
     
     /// Classifies image and returns recognized landmark
