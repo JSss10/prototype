@@ -39,9 +39,16 @@ def load_pytorch_model(model_path, num_classes):
     return model, checkpoint
 
 
-def convert_to_coreml(pytorch_model, class_labels, output_path='ml_training/models/ZurichLandmarkClassifier.mlmodel'):
+def convert_to_coreml(pytorch_model, class_labels, output_path=None):
     """Convert PyTorch model to Core ML format."""
     print("\nConverting to Core ML format...")
+
+    # Auto-detect output path
+    if output_path is None:
+        if Path('models').exists() or Path('.').resolve().name == 'ml_training':
+            output_path = 'models/ZurichLandmarkClassifier.mlpackage'
+        else:
+            output_path = 'ml_training/models/ZurichLandmarkClassifier.mlpackage'
 
     # Define input shape (batch=1, channels=3, height=224, width=224)
     example_input = torch.rand(1, 3, 224, 224)
@@ -73,8 +80,15 @@ def convert_to_coreml(pytorch_model, class_labels, output_path='ml_training/mode
 
     # Add input/output descriptions
     mlmodel.input_description['image'] = 'Input image of a landmark (224x224 RGB)'
-    mlmodel.output_description['classLabel'] = 'Predicted landmark class'
-    mlmodel.output_description['classLabelProbs'] = 'Confidence scores for each landmark'
+
+    # Try to add output descriptions (names may vary)
+    try:
+        if 'classLabel' in mlmodel.output_description:
+            mlmodel.output_description['classLabel'] = 'Predicted landmark class'
+        if 'classLabelProbs' in mlmodel.output_description:
+            mlmodel.output_description['classLabelProbs'] = 'Confidence scores for each landmark'
+    except:
+        pass  # Output names may vary, skip if not found
 
     # Save model
     output_path = Path(output_path)
@@ -92,10 +106,20 @@ def convert_to_coreml(pytorch_model, class_labels, output_path='ml_training/mode
     return mlmodel, output_path
 
 
-def create_class_mapping_for_swift(class_to_idx, output_path='ml_training/models/class_mapping_swift.json'):
+def create_class_mapping_for_swift(class_to_idx, output_path=None):
     """Create a mapping file that can be used in Swift code."""
-    # Load original class mapping with landmark IDs
-    original_mapping_path = Path('ml_training/data/class_mapping.json')
+    # Auto-detect paths
+    if output_path is None:
+        if Path('models').exists() or Path('.').resolve().name == 'ml_training':
+            output_path = 'models/class_mapping_swift.json'
+        else:
+            output_path = 'ml_training/models/class_mapping_swift.json'
+
+    # Auto-detect original mapping path
+    if Path('data/class_mapping.json').exists():
+        original_mapping_path = Path('data/class_mapping.json')
+    else:
+        original_mapping_path = Path('ml_training/data/class_mapping.json')
 
     if not original_mapping_path.exists():
         print("Warning: Original class mapping not found")
@@ -130,10 +154,15 @@ def main():
     print("PyTorch to Core ML Converter")
     print("="*60)
 
-    # Paths
-    MODEL_PATH = Path('ml_training/models/best_model.pth')
-    CLASS_MAPPING_PATH = Path('ml_training/data/pytorch_class_mapping.json')
-    OUTPUT_PATH = Path('ml_training/models/ZurichLandmarkClassifier.mlmodel')
+    # Auto-detect paths based on current directory
+    if Path('models/best_model.pth').exists():
+        MODEL_PATH = Path('models/best_model.pth')
+        CLASS_MAPPING_PATH = Path('data/pytorch_class_mapping.json')
+        OUTPUT_PATH = Path('models/ZurichLandmarkClassifier.mlpackage')
+    else:
+        MODEL_PATH = Path('ml_training/models/best_model.pth')
+        CLASS_MAPPING_PATH = Path('ml_training/data/pytorch_class_mapping.json')
+        OUTPUT_PATH = Path('ml_training/models/ZurichLandmarkClassifier.mlpackage')
 
     # Check if files exist
     if not MODEL_PATH.exists():
