@@ -77,10 +77,9 @@ struct ARLandmarkView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .fontWeight(.medium)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.black)
                     .frame(width: 44, height: 44)
                     .background(.ultraThinMaterial, in: Circle())
-                    .environment(\.colorScheme, .dark)
             }
 
             Spacer()
