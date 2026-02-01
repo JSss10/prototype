@@ -20,8 +20,8 @@ class ARModeManager: ObservableObject {
         
         var icon: String {
             switch self {
-            case .visualRecognition: return "eye.fill"
-            case .geoBased: return "location.fill"
+            case .visualRecognition: return "arkit"
+            case .geoBased: return "location.viewfinder"
             }
         }
         
