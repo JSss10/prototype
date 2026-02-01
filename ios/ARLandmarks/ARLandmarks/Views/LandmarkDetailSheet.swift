@@ -477,17 +477,6 @@ struct LandmarkDetailSheet: View {
                     value: String(format: "%.4f°N, %.4f°E", landmark.latitude, landmark.longitude)
                 )
 
-                if landmark.altitude > 0 {
-                    Divider()
-                        .padding(.leading, 52)
-
-                    detailRow(
-                        icon: "arrow.up",
-                        title: "Altitude",
-                        value: "\(Int(landmark.altitude)) m"
-                    )
-                }
-
                 if let address = landmark.streetAddress, !address.isEmpty {
                     Divider()
                         .padding(.leading, 52)
@@ -689,7 +678,6 @@ private extension Landmark {
             "name": "Sample Landmark",
             "latitude": 47.3769,
             "longitude": 8.5417,
-            "altitude": 408,
             "description": "A beautiful sample landmark with a long description that spans multiple lines to test the layout and scrolling behavior.",
             "is_active": true,
             "created_at": "2026-01-01T00:00:00Z",

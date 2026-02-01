@@ -136,7 +136,6 @@ function transformPOI(poi: any) {
     zurich_card: zurichCard,
     latitude: coords.latitude || 47.3769,
     longitude: coords.longitude || 8.5417,
-    altitude: 408,
     api_categories: apiCategories.length > 0 ? apiCategories : null,
     image_url: primaryImage,
     image_caption: imageCaption,

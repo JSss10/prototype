@@ -22,7 +22,6 @@ export interface Landmark {
   zurich_card: boolean | null
   latitude: number
   longitude: number
-  altitude: number
   category_id: string | null
   api_categories: string[] | null
   image_url: string | null
