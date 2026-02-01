@@ -36,7 +36,6 @@ struct Landmark: Codable, Identifiable, Sendable, Equatable {
     let zurichCard: Bool?
     let latitude: Double
     let longitude: Double
-    let altitude: Double
     let categoryId: String?
     let apiCategories: [String]?
     let imageUrl: String?
@@ -70,7 +69,7 @@ struct Landmark: Codable, Identifiable, Sendable, Equatable {
     let category: Category?
 
     enum CodingKeys: String, CodingKey {
-        case id, name, description, latitude, longitude, altitude, category, price, opens, city, phone, email, place
+        case id, name, description, latitude, longitude, category, price, opens, city, phone, email, place
         case nameEn = "name_en"
         case disambiguatingDescription = "disambiguating_description"
         case descriptionEn = "description_en"
@@ -112,7 +111,6 @@ struct Landmark: Codable, Identifiable, Sendable, Equatable {
         name = try container.decode(String.self, forKey: .name)
         latitude = try container.decode(Double.self, forKey: .latitude)
         longitude = try container.decode(Double.self, forKey: .longitude)
-        altitude = try container.decode(Double.self, forKey: .altitude)
         isActive = try container.decode(Bool.self, forKey: .isActive)
         createdAt = try container.decode(String.self, forKey: .createdAt)
         updatedAt = try container.decode(String.self, forKey: .updatedAt)
@@ -174,7 +172,6 @@ struct Landmark: Codable, Identifiable, Sendable, Equatable {
         try container.encodeIfPresent(zurichCard, forKey: .zurichCard)
         try container.encode(latitude, forKey: .latitude)
         try container.encode(longitude, forKey: .longitude)
-        try container.encode(altitude, forKey: .altitude)
         try container.encodeIfPresent(categoryId, forKey: .categoryId)
         try container.encodeIfPresent(apiCategories, forKey: .apiCategories)
         try container.encodeIfPresent(imageUrl, forKey: .imageUrl)

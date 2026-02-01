@@ -136,7 +136,6 @@ function transformPOI(poi) {
 
     latitude: coords.latitude || 47.3769,
     longitude: coords.longitude || 8.5417,
-    altitude: 408,
 
     street_address: address.streetAddress,
     postal_code: address.postalCode,

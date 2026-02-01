@@ -36,11 +36,8 @@ struct ARPositionCalculator {
         // AR coordinates
         let x = Float(arDistance * sin(relativeBearing))
         let z = Float(-arDistance * cos(relativeBearing))
-        
-        let altitudeDiff = landmark.altitude - userLocation.altitude
-        let scaledHeight = Float(altitudeDiff / 500)
-        let y = max(-0.5, min(1.5, scaledHeight)) + 0.3
-        
+        let y: Float = 0.3
+
         return SIMD3<Float>(x, y, z)
     }
     
