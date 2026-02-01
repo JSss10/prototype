@@ -43,6 +43,14 @@ class VisionService: ObservableObject {
             print("⚠️ Vision Model loading failed: \(error.localizedDescription)")
         }
     }
+
+    /// Applies softmax to convert raw logits to probabilities
+    private func softmax(_ values: [Float]) -> [Float] {
+        let maxVal = values.max() ?? 0
+        let expValues = values.map { exp($0 - maxVal) }
+        let sumExp = expValues.reduce(0, +)
+        return expValues.map { $0 / sumExp }
+    }
     
     /// Classifies image and returns recognized landmark
     func classifyImage(_ pixelBuffer: CVPixelBuffer) async -> RecognitionResult? {
@@ -75,17 +83,30 @@ class VisionService: ObservableObject {
                 }
                 
                 guard let results = request.results as? [VNClassificationObservation],
-                      let topResult = results.first else {
+                      !results.isEmpty else {
                     continuation.resume(returning: nil)
                     return
                 }
 
-                // Debug: Print top 3 predictions
-                let top3 = results.prefix(3)
+                // Apply softmax to normalize raw logits to probabilities
+                let rawConfidences = results.map { $0.confidence }
+                let normalizedConfidences = self.softmax(rawConfidences)
+
+                // Create sorted results with normalized confidences
+                let normalizedResults = zip(results, normalizedConfidences)
+                    .map { (observation: $0.0, confidence: $0.1) }
+                    .sorted { $0.confidence > $1.confidence }
+
+                guard let topResult = normalizedResults.first else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Debug: Print top 3 predictions with normalized confidences
                 print("🔍 Vision predictions:")
-                for (index, result) in top3.enumerated() {
-                    let percent = Int(result.confidence * 100)
-                    print("  \(index + 1). \(result.identifier): \(percent)%")
+                for (index, item) in normalizedResults.prefix(3).enumerated() {
+                    let percent = Int(item.confidence * 100)
+                    print("  \(index + 1). \(item.observation.identifier): \(percent)%")
                 }
 
                 guard topResult.confidence > 0.75 else {
@@ -97,18 +118,18 @@ class VisionService: ObservableObject {
                     continuation.resume(returning: nil)
                     return
                 }
-                
-                let landmarkID = self.classToLandmarkID[topResult.identifier]
+
+                let landmarkID = self.classToLandmarkID[topResult.observation.identifier]
                 let result = RecognitionResult(
-                    identifier: topResult.identifier,
+                    identifier: topResult.observation.identifier,
                     confidence: topResult.confidence,
                     landmarkID: landmarkID
                 )
 
-                print("✅ Recognized: \(topResult.identifier) (\(Int(topResult.confidence * 100))%) -> ID: \(landmarkID ?? "NOT_MAPPED")")
+                print("✅ Recognized: \(topResult.observation.identifier) (\(Int(topResult.confidence * 100))%) -> ID: \(landmarkID ?? "NOT_MAPPED")")
 
                 Task { @MainActor in
-                    self.recognizedLandmark = topResult.identifier
+                    self.recognizedLandmark = topResult.observation.identifier
                     self.confidence = topResult.confidence
                 }
 
@@ -129,21 +150,35 @@ class VisionService: ObservableObject {
     /// Classifies UIImage
     func classifyImage(_ image: UIImage) async -> RecognitionResult? {
         guard let cgImage = image.cgImage else { return nil }
-        
+
         guard let model = model else { return nil }
-        
+
         return await withCheckedContinuation { continuation in
-            let request = VNCoreMLRequest(model: model) { request, error in
-                guard let results = request.results as? [VNClassificationObservation],
-                      let topResult = results.first else {
+            let request = VNCoreMLRequest(model: model) { [weak self] request, error in
+                guard let self = self,
+                      let results = request.results as? [VNClassificationObservation],
+                      !results.isEmpty else {
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Apply softmax to normalize raw logits to probabilities
+                let rawConfidences = results.map { $0.confidence }
+                let normalizedConfidences = self.softmax(rawConfidences)
+
+                let normalizedResults = zip(results, normalizedConfidences)
+                    .map { (observation: $0.0, confidence: $0.1) }
+                    .sorted { $0.confidence > $1.confidence }
+
+                guard let topResult = normalizedResults.first else {
                     continuation.resume(returning: nil)
                     return
                 }
 
                 // Debug: Print predictions
                 print("🔍 Vision (UIImage) predictions:")
-                for (index, result) in results.prefix(3).enumerated() {
-                    print("  \(index + 1). \(result.identifier): \(Int(result.confidence * 100))%")
+                for (index, item) in normalizedResults.prefix(3).enumerated() {
+                    print("  \(index + 1). \(item.observation.identifier): \(Int(item.confidence * 100))%")
                 }
 
                 guard topResult.confidence > 0.75 else {
@@ -153,9 +188,9 @@ class VisionService: ObservableObject {
                 }
 
                 let result = RecognitionResult(
-                    identifier: topResult.identifier,
+                    identifier: topResult.observation.identifier,
                     confidence: topResult.confidence,
-                    landmarkID: self.classToLandmarkID[topResult.identifier]
+                    landmarkID: self.classToLandmarkID[topResult.observation.identifier]
                 )
                 continuation.resume(returning: result)
             }
