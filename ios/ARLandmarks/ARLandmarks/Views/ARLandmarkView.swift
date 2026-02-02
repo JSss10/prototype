@@ -46,7 +46,7 @@ struct ARLandmarkView: View {
             modeManager.stopSession()
         }
         .sheet(isPresented: $showingDetail) {
-            if let landmark = selectedLandmark {
+            if let landmark = selectedLandmark ?? modeManager.recognizedLandmark {
                 LandmarkDetailSheet(
                     landmark: landmark,
                     weather: modeManager.weather
