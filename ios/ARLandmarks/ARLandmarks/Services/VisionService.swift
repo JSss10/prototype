@@ -22,10 +22,11 @@ class VisionService: ObservableObject {
     private let minimumInterval: TimeInterval = 0.5
     
     // Maps ML model class names to Supabase landmark IDs
+    // Updated with correct IDs from production database
     private let classToLandmarkID: [String: String] = [
-        "fraumunster": "c7642023-c860-4f5f-ba62-b9155d895bf3",
-        "grossmunster": "40e604d8-4179-4521-ae27-3e2918689db2",
-        "opera_house": "bc4b1e54-f6ab-470f-80e3-6be4c832f12f"
+        "fraumunster": "36fffbdf-f13f-4001-8e85-dae9ed6c206d",
+        "grossmunster": "1668b72b-3d97-4490-9d92-c8b4ef4af604",
+        "opera_house": "d0d0316b-980d-430a-8c4c-2ca830182838"  // Sechseläutenplatz (at Opera House)
     ]
     
     init() {
