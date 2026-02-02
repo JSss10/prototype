@@ -421,9 +421,12 @@ struct ARViewContainer: UIViewRepresentable {
                     print("No landmark found for ID: \(entityName)")
                 }
             } else {
-                print("Click on empty area - deselect")
+                print("Click on empty area - clear selection and restart scanning")
                 DispatchQueue.main.async {
                     self.parent.selectedLandmark = nil
+                    // Clear recognized landmark to allow scanning again
+                    self.parent.modeManager.recognizedLandmark = nil
+                    self.parent.modeManager.statusMessage = "Searching for landmarks..."
                 }
             }
         }
