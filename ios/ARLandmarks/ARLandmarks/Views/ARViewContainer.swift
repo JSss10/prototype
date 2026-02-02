@@ -132,6 +132,9 @@ struct ARViewContainer: UIViewRepresentable {
             // Only process frames when in visual recognition mode
             guard parent.modeManager.currentMode == .visualRecognition else { return }
 
+            // Stop scanning if landmark already recognized
+            guard parent.modeManager.recognizedLandmark == nil else { return }
+
             // Throttle processing to avoid overwhelming the device
             let now = Date()
             guard now.timeIntervalSince(lastVisionProcessTime) >= 0.5 else { return }

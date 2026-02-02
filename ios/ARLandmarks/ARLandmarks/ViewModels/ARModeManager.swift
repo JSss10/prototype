@@ -120,6 +120,7 @@ class ARModeManager: ObservableObject {
     
     func switchToVisualMode() {
         currentMode = .visualRecognition
+        recognizedLandmark = nil
         lastRecognitionTime = Date()
         statusMessage = "Searching for landmarks..."
     }
