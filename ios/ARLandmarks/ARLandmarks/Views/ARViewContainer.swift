@@ -25,7 +25,6 @@ struct ARViewContainer: UIViewRepresentable {
         config.worldAlignment = .gravityAndHeading
         arView.session.run(config)
 
-        // Set delegate to capture frames
         arView.session.delegate = context.coordinator
 
         context.coordinator.arView = arView
@@ -129,18 +128,16 @@ struct ARViewContainer: UIViewRepresentable {
         // MARK: - ARSessionDelegate
 
         func session(_ session: ARSession, didUpdate frame: ARFrame) {
-            // Only process frames when in visual recognition mode
             guard parent.modeManager.currentMode == .visualRecognition else { return }
 
-            // Throttle processing to avoid overwhelming the device
+            guard parent.modeManager.recognizedLandmark == nil else { return }
+
             let now = Date()
             guard now.timeIntervalSince(lastVisionProcessTime) >= 0.5 else { return }
             lastVisionProcessTime = now
 
-            // Get the camera frame
             let pixelBuffer = frame.capturedImage
 
-            // Process vision recognition asynchronously
             Task { @MainActor in
                 if let result = await parent.modeManager.visionService.classifyImage(pixelBuffer) {
                     parent.modeManager.handleRecognition(result, landmarks: landmarks)
@@ -418,9 +415,11 @@ struct ARViewContainer: UIViewRepresentable {
                     print("No landmark found for ID: \(entityName)")
                 }
             } else {
-                print("Click on empty area - deselect")
+                print("Click on empty area - clear selection and restart scanning")
                 DispatchQueue.main.async {
                     self.parent.selectedLandmark = nil
+                    self.parent.modeManager.recognizedLandmark = nil
+                    self.parent.modeManager.statusMessage = "Searching for landmarks..."
                 }
             }
         }

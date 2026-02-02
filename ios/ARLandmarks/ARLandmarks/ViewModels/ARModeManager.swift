@@ -90,15 +90,29 @@ class ARModeManager: ObservableObject {
     
     func handleRecognition(_ result: RecognitionResult, landmarks: [Landmark]) {
         lastRecognitionTime = Date()
-        
+
         if currentMode != .visualRecognition {
             currentMode = .visualRecognition
         }
-        
-        if let landmarkID = result.landmarkID,
-           let landmark = landmarks.first(where: { $0.id == landmarkID }) {
-            recognizedLandmark = landmark
-            statusMessage = "\(landmark.name) recognized (\(result.confidencePercent)%)"
+
+        if let landmarkID = result.landmarkID {
+            print("🔎 Looking for landmark ID: \(landmarkID) in \(landmarks.count) landmarks")
+            if let landmark = landmarks.first(where: { $0.id == landmarkID }) {
+                recognizedLandmark = landmark
+                statusMessage = "\(landmark.name) recognized (\(result.confidencePercent)%)"
+                print("✅ Found and set recognizedLandmark: \(landmark.name)")
+            } else {
+                print("❌ Landmark ID not found in landmarks array!")
+                // Try matching by name as fallback
+                let searchName = result.identifier.replacingOccurrences(of: "_", with: " ")
+                if let landmark = landmarks.first(where: { $0.name.lowercased().contains(searchName.lowercased()) }) {
+                    recognizedLandmark = landmark
+                    statusMessage = "\(landmark.name) recognized (\(result.confidencePercent)%)"
+                    print("✅ Found by name match: \(landmark.name)")
+                } else {
+                    print("❌ No match by name either for: \(searchName)")
+                }
+            }
         }
     }
     
@@ -120,6 +134,7 @@ class ARModeManager: ObservableObject {
     
     func switchToVisualMode() {
         currentMode = .visualRecognition
+        recognizedLandmark = nil
         lastRecognitionTime = Date()
         statusMessage = "Searching for landmarks..."
     }
