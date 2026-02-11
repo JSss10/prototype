@@ -3,33 +3,34 @@
 
 set -e
 
-# Paths
-MODEL_FILE="ml_training/models/ZurichLandmarkClassifier.mlmodel"
-XCODE_MODELS_DIR="ios/ARLandmarks/ARLandmarks/Models"
+# Auto-detect paths based on current directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ML_DIR="$(dirname "$SCRIPT_DIR")"
+PROJECT_DIR="$(dirname "$ML_DIR")"
+
+MODEL_PACKAGE="$ML_DIR/models/ZurichLandmarkClassifier.mlpackage"
+XCODE_MODELS_DIR="$PROJECT_DIR/ios/ARLandmarks/ARLandmarks/Models"
 
 # Check if model exists
-if [ ! -f "$MODEL_FILE" ]; then
-    echo "Error: Model file not found at $MODEL_FILE"
+if [ ! -d "$MODEL_PACKAGE" ]; then
+    echo "Error: Model not found at $MODEL_PACKAGE"
     echo "Run the training pipeline first:"
-    echo "  1. python scripts/fetch_landmarks.py"
-    echo "  2. Collect training images manually"
-    echo "  3. python scripts/train_model.py"
-    echo "  4. python scripts/convert_to_coreml.py"
+    echo "  1. python scripts/train_model.py"
+    echo "  2. python scripts/convert_to_coreml.py"
     exit 1
 fi
 
 # Create models directory if it doesn't exist
 mkdir -p "$XCODE_MODELS_DIR"
 
-# Copy model
+# Copy model package (it's a directory)
 echo "Copying model to Xcode project..."
-cp "$MODEL_FILE" "$XCODE_MODELS_DIR/"
+rm -rf "$XCODE_MODELS_DIR/ZurichLandmarkClassifier.mlpackage"
+cp -R "$MODEL_PACKAGE" "$XCODE_MODELS_DIR/"
 
-echo "✓ Model copied to $XCODE_MODELS_DIR/ZurichLandmarkClassifier.mlmodel"
+echo "✓ Model copied to $XCODE_MODELS_DIR/ZurichLandmarkClassifier.mlpackage"
 echo ""
 echo "Next steps:"
 echo "  1. Open your Xcode project"
 echo "  2. Add the model file to your project (if not already added)"
-echo "  3. Update VisionService.swift with the class-to-landmark mapping"
-echo "  4. Uncomment the model loading code in VisionService.swift"
-echo "  5. Build and run!"
+echo "  3. Build and run!"
