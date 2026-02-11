@@ -102,8 +102,8 @@ class VisionService: ObservableObject {
                     print("  \(index + 1). \(item.observation.identifier): \(percent)%")
                 }
 
-                guard topResult.confidence > 0.75 else {
-                    print("⚠️ Top result below threshold: \(Int(topResult.confidence * 100))% < 75%")
+                guard topResult.confidence > 0.90 else {
+                    print("Top result below threshold: \(Int(topResult.confidence * 100))% < 90%")
                     Task { @MainActor in
                         self.recognizedLandmark = nil
                         self.confidence = 0
@@ -171,8 +171,8 @@ class VisionService: ObservableObject {
                     print("  \(index + 1). \(item.observation.identifier): \(Int(item.confidence * 100))%")
                 }
 
-                guard topResult.confidence > 0.75 else {
-                    print("⚠️ Below threshold: \(Int(topResult.confidence * 100))%")
+                guard topResult.confidence > 0.90 else {
+                    print("Below threshold: \(Int(topResult.confidence * 100))%")
                     continuation.resume(returning: nil)
                     return
                 }

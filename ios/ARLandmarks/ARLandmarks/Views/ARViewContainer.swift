@@ -130,8 +130,6 @@ struct ARViewContainer: UIViewRepresentable {
         func session(_ session: ARSession, didUpdate frame: ARFrame) {
             guard parent.modeManager.currentMode == .visualRecognition else { return }
 
-            guard parent.modeManager.recognizedLandmark == nil else { return }
-
             let now = Date()
             guard now.timeIntervalSince(lastVisionProcessTime) >= 0.5 else { return }
             lastVisionProcessTime = now

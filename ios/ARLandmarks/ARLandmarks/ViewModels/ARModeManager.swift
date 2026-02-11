@@ -55,8 +55,8 @@ class ARModeManager: ObservableObject {
     /// Maximum distance for Geo-POIs in meters
     let maxPOIDistance: Double = 2000
     
-    /// Time without recognition before fallback is activated
-    let recognitionTimeout: TimeInterval = 5.0
+    /// Time without recognition before the overlay is hidden
+    let recognitionTimeout: TimeInterval = 0.5
     
     private var lastRecognitionTime: Date = Date()
     private var cancellables = Set<AnyCancellable>()
@@ -118,10 +118,10 @@ class ARModeManager: ObservableObject {
     
     func handleNoRecognition() {
         let timeSinceLastRecognition = Date().timeIntervalSince(lastRecognitionTime)
-        
-        if timeSinceLastRecognition > recognitionTimeout && currentMode == .visualRecognition {
-            // Fallback Geo-Mode
-            switchToGeoMode()
+
+        if timeSinceLastRecognition > recognitionTimeout && currentMode == .visualRecognition && recognizedLandmark != nil {
+            recognizedLandmark = nil
+            statusMessage = "Searching for landmarks..."
         }
     }
     
