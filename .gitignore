@@ -1,10 +1,32 @@
-# --------------------
-# iOS / Xcode
-# --------------------
+# ====================
+# Allgemein / OS
+# ====================
 
 # macOS
 .DS_Store
 **/.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# --------------------
+# IDE / Editor
+# --------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# --------------------
+# iOS / Xcode
+# --------------------
 
 # user-specific
 **/xcuserdata/
@@ -36,6 +58,10 @@ playground.xcworkspace
 
 # SwiftPM
 .swiftpm/
+
+# --------------------
+# Secrets / Keys
+# --------------------
 
 # Secrets (xcconfig)
 Secrets*.xcconfig
