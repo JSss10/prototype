@@ -1,15 +1,15 @@
 # AR Landmarks App
 
-Eine iOS-App, die Sehenswuerdigkeiten in Echtzeit ueber die Kamera erkennt und Informationen als AR-Overlay anzeigt. Dazu gehoert ein Web-Dashboard zur Verwaltung der Landmarks und eine ML-Pipeline zum Trainieren des Erkennungsmodells.
+Eine iOS-App, die Sehenswürdigkeiten in Echtzeit über die Kamera erkennt und Informationen als AR-Overlay anzeigt. Dazu gehört ein Web-Dashboard zur Verwaltung der Landmarks und eine ML-Pipeline zum Trainieren des Erkennungsmodells.
 
-## Uebersicht
+## Übersicht
 
 Das Projekt besteht aus drei Teilen:
 
 | Teil | Beschreibung | Technologie |
 |------|-------------|-------------|
 | **iOS App** | AR-Kamera-App mit Landmark-Erkennung | Swift, SwiftUI, Core ML, ARKit |
-| **Dashboard** | Web-Oberflaeche zur Verwaltung der Landmarks | Next.js, React, TypeScript |
+| **Dashboard** | Web-Oberfläche zur Verwaltung der Landmarks | Next.js, React, TypeScript |
 | **ML Training** | Pipeline zum Trainieren des Erkennungsmodells | Python, PyTorch, Core ML Tools |
 
 ## Was du brauchst
@@ -22,19 +22,19 @@ Bevor du loslegst, stelle sicher, dass du folgende Accounts und Programme hast:
    - Erstelle einen Account auf [supabase.com](https://supabase.com)
    - Erstelle ein neues Projekt
    - Notiere dir die **Project URL** und den **Anon Key** (findest du unter Project Settings > API)
-   - Notiere dir auch den **Service Role Key** (brauchst du fuer das Dashboard)
+   - Notiere dir auch den **Service Role Key** (brauchst du für das Dashboard)
 
 2. **OpenWeatherMap** - Wetterdaten in der App
    - Erstelle einen Account auf [openweathermap.org](https://openweathermap.org/api)
    - Gehe zu "API Keys" und kopiere deinen Key
 
-3. **Google Cloud Console** (optional, fuer Google-Login im Dashboard)
+3. **Google Cloud Console** (optional, für Google-Login im Dashboard)
    - Erstelle OAuth-Zugangsdaten auf [console.cloud.google.com](https://console.cloud.google.com)
    - Konfiguriere den Google-Provider in deinem Supabase-Projekt unter Authentication > Providers
 
 ### Programme
 
-| Programm | Wofuer | Download |
+| Programm | Wofür | Download |
 |----------|--------|----------|
 | **Xcode** (Version 16+) | iOS-App bauen und testen | Mac App Store |
 | **Node.js** (Version 18+) | Dashboard starten | [nodejs.org](https://nodejs.org) |
@@ -45,7 +45,7 @@ Bevor du loslegst, stelle sicher, dass du folgende Accounts und Programme hast:
 
 ### 1. Projekt herunterladen
 
-Oeffne das **Terminal** (auf dem Mac: Programme > Dienstprogramme > Terminal) und fuehre folgendes aus:
+Öffne das **Terminal** (auf dem Mac: Programme > Dienstprogramme > Terminal) und führe folgendes aus:
 
 ```bash
 git clone https://github.com/JSss10/ar-landmarks-app.git
@@ -56,9 +56,9 @@ cd ar-landmarks-app
 
 Die App braucht eine Datenbank. Erstelle folgende Tabellen in deinem Supabase-Projekt:
 
-1. Gehe zu [supabase.com](https://supabase.com) und oeffne dein Projekt
+1. Gehe zu [supabase.com](https://supabase.com) und öffne dein Projekt
 2. Klicke links auf **SQL Editor**
-3. Fuehre folgendes SQL aus:
+3. Führe folgendes SQL aus:
 
 ```sql
 -- Kategorien-Tabelle
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS categories (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Landmarks-Tabelle (Sehenswuerdigkeiten)
+-- Landmarks-Tabelle (Sehenswürdigkeiten)
 CREATE TABLE IF NOT EXISTS landmarks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS landmarks (
   address_country TEXT,
   street_address TEXT,
   postal_code TEXT,
-  city TEXT DEFAULT 'Zuerich',
+  city TEXT DEFAULT 'Zürich',
   phone TEXT,
   email TEXT,
   website_url TEXT,
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS landmark_photos (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Landmark-Kategorien (Verknuepfung)
+-- Landmark-Kategorien (Verknüpfung)
 CREATE TABLE IF NOT EXISTS landmark_categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   landmark_id UUID REFERENCES landmarks(id) ON DELETE CASCADE,
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS landmark_categories (
 );
 ```
 
-4. Aktiviere **Row Level Security (RLS)** fuer die Tabellen und erstelle Policies fuer Lesezugriff:
+4. Aktiviere **Row Level Security (RLS)** für die Tabellen und erstelle Policies für Lesezugriff:
 
 ```sql
 -- RLS aktivieren
@@ -152,25 +152,25 @@ ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE landmark_photos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE landmark_categories ENABLE ROW LEVEL SECURITY;
 
--- Lesezugriff fuer alle (fuer die iOS-App)
-CREATE POLICY "Landmarks sind oeffentlich lesbar" ON landmarks FOR SELECT USING (true);
-CREATE POLICY "Kategorien sind oeffentlich lesbar" ON categories FOR SELECT USING (true);
-CREATE POLICY "Fotos sind oeffentlich lesbar" ON landmark_photos FOR SELECT USING (true);
-CREATE POLICY "Landmark-Kategorien sind oeffentlich lesbar" ON landmark_categories FOR SELECT USING (true);
+-- Lesezugriff für alle (für die iOS-App)
+CREATE POLICY "Landmarks sind öffentlich lesbar" ON landmarks FOR SELECT USING (true);
+CREATE POLICY "Kategorien sind öffentlich lesbar" ON categories FOR SELECT USING (true);
+CREATE POLICY "Fotos sind öffentlich lesbar" ON landmark_photos FOR SELECT USING (true);
+CREATE POLICY "Landmark-Kategorien sind öffentlich lesbar" ON landmark_categories FOR SELECT USING (true);
 
--- Schreibzugriff nur fuer authentifizierte User (Dashboard)
-CREATE POLICY "Auth users koennen Landmarks bearbeiten" ON landmarks FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "Auth users koennen Kategorien bearbeiten" ON categories FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "Auth users koennen Fotos bearbeiten" ON landmark_photos FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "Auth users koennen Verknuepfungen bearbeiten" ON landmark_categories FOR ALL USING (auth.role() = 'authenticated');
+-- Schreibzugriff nur für authentifizierte User (Dashboard)
+CREATE POLICY "Auth users können Landmarks bearbeiten" ON landmarks FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth users können Kategorien bearbeiten" ON categories FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth users können Fotos bearbeiten" ON landmark_photos FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth users können Verknüpfungen bearbeiten" ON landmark_categories FOR ALL USING (auth.role() = 'authenticated');
 ```
 
 ### 3. iOS-App einrichten
 
-Die vollstaendige Anleitung findest du in der [iOS README](ios/ARLandmarks/README.md). Hier die Kurzfassung:
+Die vollständige Anleitung findest du in der [iOS README](ios/ARLandmarks/README.md). Hier die Kurzfassung:
 
 ```bash
-# 1. Oeffne das Xcode-Projekt
+# 1. Öffne das Xcode-Projekt
 open ios/ARLandmarks/ARLandmarks.xcodeproj
 ```
 
@@ -181,24 +181,24 @@ open ios/ARLandmarks/ARLandmarks.xcodeproj
    SUPABASE_ANON_KEY = DEIN_ANON_KEY
    OPENWEATHER_API_KEY = DEIN_OPENWEATHER_KEY
    ```
-4. Waehle dein iPhone als Zielgeraet und klicke auf **Run** (Play-Button)
+4. Wähle dein iPhone als Zielgerät und klicke auf **Run** (Play-Button)
 
 ### 4. Dashboard einrichten
 
-Die vollstaendige Anleitung findest du in der [Dashboard README](dashboard/README.md). Hier die Kurzfassung:
+Die vollständige Anleitung findest du in der [Dashboard README](dashboard/README.md). Hier die Kurzfassung:
 
 ```bash
 # 1. In den Dashboard-Ordner wechseln
 cd dashboard
 
-# 2. Abhaengigkeiten installieren
+# 2. Abhängigkeiten installieren
 npm install
 
 # 3. Umgebungsvariablen konfigurieren
 cp .env.example .env.local
 ```
 
-4. Oeffne `.env.local` und trage deine Supabase-Daten ein:
+4. Öffne `.env.local` und trage deine Supabase-Daten ein:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://DEIN-PROJEKT.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=DEIN_ANON_KEY
@@ -210,39 +210,39 @@ cp .env.example .env.local
    npm run dev
    ```
 
-6. Oeffne [http://localhost:3000](http://localhost:3000) im Browser
+6. Öffne [http://localhost:3000](http://localhost:3000) im Browser
 
 ### 5. Landmarks importieren (optional)
 
-Um Sehenswuerdigkeiten aus der Zurich Tourism API zu importieren:
+Um Sehenswürdigkeiten aus der Zurich Tourism API zu importieren:
 
 ```bash
 # 1. In den Scripts-Ordner wechseln
 cd scripts
 
-# 2. Abhaengigkeiten installieren
+# 2. Abhängigkeiten installieren
 npm install
 
 # 3. Umgebungsvariablen konfigurieren
 cp .env.example .env
 ```
 
-4. Oeffne `.env` und trage ein:
+4. Öffne `.env` und trage ein:
    ```
    SUPABASE_URL=https://DEIN-PROJEKT.supabase.co
    SUPABASE_SERVICE_KEY=DEIN_SERVICE_ROLE_KEY
    ```
 
-5. Sync ausfuehren:
+5. Sync ausführen:
    ```bash
    npm run sync
    ```
 
-Alternativ kannst du den Sync auch direkt im Dashboard ueber den **"Sync POIs"**-Button starten.
+Alternativ kannst du den Sync auch direkt im Dashboard über den **"Sync POIs"**-Button starten.
 
 ### 6. ML-Modell trainieren (optional)
 
-Falls du das Erkennungsmodell selbst trainieren moechtest, findest du die vollstaendige Anleitung in der [ML Training README](ml_training/README.md). Es gibt auch eine [Schnellstart-Anleitung fuer 3 Landmarks](ml_training/START_WITH_3_LANDMARKS.md).
+Falls du das Erkennungsmodell selbst trainieren möchtest, findest du die vollständige Anleitung in der [ML Training README](ml_training/README.md). Es gibt auch eine [Schnellstart-Anleitung für 3 Landmarks](ml_training/START_WITH_3_LANDMARKS.md).
 
 Ein vortrainiertes Modell ist bereits im Projekt enthalten.
 
@@ -274,13 +274,13 @@ ar-landmarks-app/
 
 | Anleitung | Beschreibung |
 |-----------|-------------|
-| [iOS App Setup](ios/ARLandmarks/README.md) | Schritt-fuer-Schritt iOS-App einrichten |
+| [iOS App Setup](ios/ARLandmarks/README.md) | Schritt-für-Schritt iOS-App einrichten |
 | [Dashboard Setup](dashboard/README.md) | Dashboard lokal starten und deployen |
 | [ML Training](ml_training/README.md) | Eigenes Erkennungsmodell trainieren |
 | [ML Schnellstart](ml_training/START_WITH_3_LANDMARKS.md) | In 30 Minuten mit 3 Landmarks starten |
 | [Testing Guide](ml_training/TESTING_GUIDE.md) | Modell testen und verbessern |
 
-## Haeufige Probleme
+## Häufige Probleme
 
 ### "npm: command not found"
 Node.js ist nicht installiert. Lade es von [nodejs.org](https://nodejs.org) herunter und installiere die LTS-Version.
@@ -288,11 +288,11 @@ Node.js ist nicht installiert. Lade es von [nodejs.org](https://nodejs.org) heru
 ### "python3: command not found"
 Python ist nicht installiert. Lade es von [python.org](https://python.org) herunter. Auf dem Mac kannst du auch `brew install python3` verwenden, falls Homebrew installiert ist.
 
-### "Xcode-Projekt laesst sich nicht oeffnen"
+### "Xcode-Projekt lässt sich nicht öffnen"
 Stelle sicher, dass Xcode installiert ist (Mac App Store). Die App kann nur auf einem Mac entwickelt werden.
 
 ### "Dashboard zeigt Fehler beim Starten"
-Pruefe, ob die `.env.local`-Datei korrekt ausgefuellt ist und ob der Supabase-Key stimmt.
+Prüfe, ob die `.env.local`-Datei korrekt ausgefüllt ist und ob der Supabase-Key stimmt.
 
 ### "iOS-App verbindet sich nicht mit Supabase"
-Pruefe, ob `Secrets.xcconfig` korrekt ausgefuellt ist (nicht `Secrets.example.xcconfig`).
+Prüfe, ob `Secrets.xcconfig` korrekt ausgefüllt ist (nicht `Secrets.example.xcconfig`).
