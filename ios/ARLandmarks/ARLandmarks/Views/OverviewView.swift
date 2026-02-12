@@ -18,7 +18,7 @@ struct OverviewView: View {
                 LinearGradient(
                     colors: [
                         Color.blue.opacity(0.1),
-                        Color.purple.opacity(0.05),
+                        Color.cyan.opacity(0.05),
                         Color(.systemBackground)
                     ],
                     startPoint: .topLeading,
@@ -56,7 +56,7 @@ struct OverviewView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [Color.blue.opacity(0.15), Color.purple.opacity(0.1)],
+                            colors: [Color.blue.opacity(0.15), Color.cyan.opacity(0.1)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -66,7 +66,7 @@ struct OverviewView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [Color.blue.opacity(0.25), Color.purple.opacity(0.15)],
+                            colors: [Color.blue.opacity(0.25), Color.cyan.opacity(0.15)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -77,7 +77,7 @@ struct OverviewView: View {
                     .font(.system(size: 60, weight: .medium))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.blue, .purple],
+                            colors: [.blue, .cyan],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -119,7 +119,7 @@ struct OverviewView: View {
                 .padding(.vertical, 18)
                 .background(
                     LinearGradient(
-                        colors: [.blue, .purple],
+                        colors: [.blue, .cyan],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
@@ -138,14 +138,33 @@ struct OverviewView: View {
                     Text("Browse All Landmarks")
                         .font(.system(size: 17, weight: .medium))
                 }
-                .foregroundColor(.blue)
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [.blue, .cyan],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color.blue.opacity(0.1))
+                .background(
+                    LinearGradient(
+                        colors: [Color.blue.opacity(0.1), Color.cyan.opacity(0.1)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
                 .cornerRadius(16)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color.blue.opacity(0.3), Color.cyan.opacity(0.3)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ),
+                            lineWidth: 1
+                        )
                 )
             }
             .disabled(viewModel.landmarks.isEmpty)

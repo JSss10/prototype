@@ -118,7 +118,9 @@ struct LandmarkListView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(selectedCategories.isEmpty ? Color.blue : Color.gray.opacity(0.2))
+                    .background(selectedCategories.isEmpty ?
+                        AnyShapeStyle(LinearGradient(colors: [.blue, .cyan], startPoint: .leading, endPoint: .trailing)) :
+                        AnyShapeStyle(Color.gray.opacity(0.2)))
                     .foregroundColor(selectedCategories.isEmpty ? .white : .primary)
                     .cornerRadius(20)
                 }

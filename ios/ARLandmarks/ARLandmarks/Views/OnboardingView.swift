@@ -44,7 +44,7 @@ struct OnboardingView: View {
             LinearGradient(
                 colors: [
                     Color.blue.opacity(0.1),
-                    Color.purple.opacity(0.05),
+                    Color.cyan.opacity(0.05),
                     Color(.systemBackground)
                 ],
                 startPoint: .topLeading,
@@ -81,7 +81,7 @@ struct OnboardingView: View {
                 Capsule()
                     .fill(currentPage == index ?
                         LinearGradient(
-                            colors: [.blue, .purple],
+                            colors: [.blue, .cyan],
                             startPoint: .leading,
                             endPoint: .trailing
                         ) :
@@ -108,7 +108,7 @@ struct OnboardingView: View {
                 .padding(.vertical, 16)
                 .background(
                     LinearGradient(
-                        colors: [.blue, .purple],
+                        colors: [.blue, .cyan],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
@@ -142,7 +142,7 @@ struct OnboardingPageView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [Color.blue.opacity(0.15), Color.purple.opacity(0.1)],
+                            colors: [Color.blue.opacity(0.15), Color.cyan.opacity(0.1)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -152,7 +152,7 @@ struct OnboardingPageView: View {
                 Circle()
                     .fill(
                         LinearGradient(
-                            colors: [Color.blue.opacity(0.25), Color.purple.opacity(0.15)],
+                            colors: [Color.blue.opacity(0.25), Color.cyan.opacity(0.15)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
@@ -163,7 +163,7 @@ struct OnboardingPageView: View {
                     .font(.system(size: 70, weight: .medium))
                     .foregroundStyle(
                         LinearGradient(
-                            colors: [.blue, .purple],
+                            colors: [.blue, .cyan],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
