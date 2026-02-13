@@ -244,7 +244,7 @@ Alternativ kannst du den Sync auch direkt im Dashboard über den **"Sync POIs"**
 
 ### 6. ML-Modell trainieren (optional)
 
-Falls du das Erkennungsmodell selbst trainieren möchtest, findest du die vollständige Anleitung in der [ML Training README](ml_training/README.md). Es gibt auch eine [Schnellstart-Anleitung für 3 Landmarks](ml_training/START_WITH_3_LANDMARKS.md).
+Falls du das Erkennungsmodell selbst trainieren möchtest, findest du die vollständige Anleitung in der [ML Training README](ml_training/README.md).
 
 Ein vortrainiertes Modell ist bereits im Projekt enthalten.
 
@@ -278,9 +278,7 @@ ar-landmarks-app/
 |-----------|-------------|
 | [iOS App Setup](ios/ARLandmarks/README.md) | Schritt-für-Schritt iOS-App einrichten |
 | [Dashboard Setup](dashboard/README.md) | Dashboard lokal starten und deployen |
-| [ML Training](ml_training/README.md) | Eigenes Erkennungsmodell trainieren |
-| [ML Schnellstart](ml_training/START_WITH_3_LANDMARKS.md) | In 30 Minuten mit 3 Landmarks starten |
-| [Testing Guide](ml_training/TESTING_GUIDE.md) | Modell testen und verbessern |
+| [ML Training](ml_training/README.md) | Eigenes Erkennungsmodell trainieren, testen und verbessern |
 
 ## Häufige Probleme
 
