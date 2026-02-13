@@ -36,9 +36,10 @@ function stripHtml(html: string | null | undefined): string | null {
     .trim();
 }
 
-function formatOpens(opens: string | null | undefined): string | null {
+function formatOpens(opens: any): string | null {
   if (!opens) return null;
-  return opens.replace(/,(?!\s)/g, ', ').trim() || null;
+  const str = Array.isArray(opens) ? opens.join(', ') : String(opens);
+  return str.replace(/,(?!\s)/g, ', ').trim() || null;
 }
 
 function formatOpeningHours(hours: any): string | null {
@@ -203,13 +204,14 @@ function transformPOI(poi: any) {
     api_source: 'zurich_tourism',
     api_raw_data: poi,
     last_synced_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     is_active: true,
     category_name: categoryName,
     photos: photos
   };
 }
 
-async function syncPOI(poi: any): Promise<{ success: boolean; name: string; error?: string }> {
+async function syncPOI(poi: any, excludeIds: string[] = []): Promise<{ success: boolean; name: string; skipped?: boolean; error?: string }> {
   const transformed = transformPOI(poi);
   const { category_name, photos, ...landmarkData } = transformed;
 
@@ -223,6 +225,10 @@ async function syncPOI(poi: any): Promise<{ success: boolean; name: string; erro
     let landmarkId: string;
 
     if (existing) {
+      if (excludeIds.includes(existing.id)) {
+        return { success: true, name: landmarkData.name_en || 'Unknown', skipped: true };
+      }
+
       const { data, error } = await supabase
         .from('landmarks')
         .update(landmarkData)
@@ -269,6 +275,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const categoryId = body.categoryId || 72;
+    const excludeIds: string[] = body.excludeIds || [];
 
     const response = await fetch(`${ZURICH_API_BASE}?id=${categoryId}`);
 
@@ -287,16 +294,22 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const results = await Promise.all(pois.map(syncPOI));
+    const results = await Promise.all(pois.map((poi: any) => syncPOI(poi, excludeIds)));
 
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter(r => r.success && !r.skipped).length;
+    const skippedCount = results.filter(r => r.skipped).length;
     const failureCount = results.filter(r => !r.success).length;
+
+    let message = `Synced ${successCount} POIs`;
+    if (skippedCount > 0) message += `, kept manual changes`;
+    if (failureCount > 0) message += `, ${failureCount} failed`;
 
     return NextResponse.json({
       success: true,
-      message: `Synced ${successCount} POIs${failureCount > 0 ? `, ${failureCount} failed` : ''}`,
+      message,
       count: successCount,
       total: pois.length,
+      skipped: skippedCount,
       results
     });
   } catch (error) {

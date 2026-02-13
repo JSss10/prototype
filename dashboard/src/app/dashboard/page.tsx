@@ -8,6 +8,7 @@ import { Landmark } from '@/lib/supabase/types'
 import { User } from '@supabase/supabase-js'
 import LandmarkModal from '@/app/components/modals/LandmarkModal'
 import DeleteLandmarkModal from '@/app/components/modals/DeleteLandmarkModal'
+import SyncConfirmationModal from '@/app/components/modals/SyncConfirmationModal'
 
 function formatDateEnglish(dateString: string | null | undefined): string {
   if (!dateString) return '-'
@@ -55,6 +56,8 @@ export default function Home() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null)
   const [isSyncing, setIsSyncing] = useState(false)
+  const [isSyncConfirmOpen, setIsSyncConfirmOpen] = useState(false)
+  const [editedLandmarks, setEditedLandmarks] = useState<Landmark[]>([])
   const [user, setUser] = useState<User | null>(null)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -166,7 +169,24 @@ export default function Home() {
     fetchData()
   }
 
+  const getManuallyEditedLandmarks = (): Landmark[] => {
+    return landmarks.filter((l) => {
+      if (!l.zurich_tourism_id || !l.last_synced_at || !l.updated_at) return false
+      return new Date(l.updated_at) > new Date(l.last_synced_at)
+    })
+  }
+
   const handleSync = async () => {
+    const edited = getManuallyEditedLandmarks()
+    if (edited.length > 0) {
+      setEditedLandmarks(edited)
+      setIsSyncConfirmOpen(true)
+      return
+    }
+    await performSync()
+  }
+
+  const performSync = async (excludeIds: string[] = []) => {
     setIsSyncing(true)
 
     try {
@@ -175,7 +195,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ categoryId: 72 }),
+        body: JSON.stringify({ categoryId: 72, excludeIds }),
       })
 
       const data = await response.json()
@@ -191,6 +211,17 @@ export default function Home() {
     } finally {
       setIsSyncing(false)
     }
+  }
+
+  const handleSyncOverwrite = () => {
+    setIsSyncConfirmOpen(false)
+    performSync()
+  }
+
+  const handleSyncKeepChanges = () => {
+    const excludeIds = editedLandmarks.map((l) => l.id)
+    setIsSyncConfirmOpen(false)
+    performSync(excludeIds)
   }
 
   if (loading) {
@@ -505,6 +536,14 @@ export default function Home() {
           onClose={() => setIsDeleteModalOpen(false)}
           onSuccess={handleSuccess}
           landmark={selectedLandmark}
+        />
+
+        <SyncConfirmationModal
+          isOpen={isSyncConfirmOpen}
+          onClose={() => setIsSyncConfirmOpen(false)}
+          onOverwrite={handleSyncOverwrite}
+          onKeepChanges={handleSyncKeepChanges}
+          editedLandmarks={editedLandmarks}
         />
       </div>
     </main>
