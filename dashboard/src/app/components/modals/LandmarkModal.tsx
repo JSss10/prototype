@@ -88,14 +88,14 @@ function cleanText(text: any): string {
 
 function cleanOpeningHours(hours: any): string {
   if (!hours) return ''
-  if (Array.isArray(hours)) return hours.join(', ')
+  if (Array.isArray(hours)) return hours.join('\n')
   const str = String(hours)
   let cleaned = str
   if (cleaned.startsWith('[')) {
     try {
       const arr = JSON.parse(cleaned)
       if (Array.isArray(arr)) {
-        cleaned = arr.join(', ')
+        cleaned = arr.join('\n')
       }
     } catch {
       cleaned = cleaned.replace(/^\[|\]$/g, '').replace(/"/g, '')
@@ -127,36 +127,6 @@ function cleanZurichCardDescription(desc: any): string {
   return cleanText(text)
 }
 
-function parseOpeningHours(hours: string | null | undefined): string {
-  if (!hours) return ''
-
-  if (hours.includes('\n')) return hours
-
-  const dayMap: Record<string, string> = {
-    'Mo': 'Monday',
-    'Tu': 'Tuesday',
-    'We': 'Wednesday',
-    'Th': 'Thursday',
-    'Fr': 'Friday',
-    'Sa': 'Saturday',
-    'Su': 'Sunday'
-  }
-
-  const parts = hours.split(' ')
-  if (parts.length === 2) {
-    const days = parts[0].split(',')
-    const timeRange = parts[1].replace(/:00$/g, '').replace(/:00-/g, '-').replace(/(\d{2}:\d{2}):\d{2}/g, '$1')
-
-    const formattedDays = days.map(d => {
-      const fullDay = dayMap[d] || d
-      return `${fullDay}: ${timeRange}`
-    })
-
-    return formattedDays.join('\n')
-  }
-
-  return hours
-}
 
 function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label: string }) {
   return (
@@ -591,7 +561,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                   onChange={(e) => setFormData({ ...formData, detailed_information: e.target.value })}
                   rows={4}
                   className={inputClass + " resize-none"}
-                  placeholder="One highlight per line"
+                  placeholder="Landmark highlights"
                 />
                 <p className="text-[12px] text-gray-400 mt-2">Enter each highlight on a new line</p>
               </div>
@@ -759,18 +729,11 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                 <textarea
                   value={formData.opening_hours}
                   onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
-                  rows={3}
-                  className={inputClass + " resize-none font-mono text-[13px]"}
-                  placeholder='["Mo,Tu,We,Th,Fr,Sa 10:00:00-18:00:00","Su 12:30:00-18:00:00"]'
+                  rows={7}
+                  className={inputClass + " resize-none"}
+                  placeholder="Opening hours"
                 />
-                {formData.opening_hours && (
-                  <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
-                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-2">Preview</p>
-                    <pre className="text-[13px] text-gray-700 whitespace-pre-wrap font-sans">
-                      {parseOpeningHours(formData.opening_hours)}
-                    </pre>
-                  </div>
-                )}
+                <p className="text-[12px] text-gray-400 mt-2">Enter each opening hour on a new line</p>
               </div>
             </SectionCard>
 
@@ -784,6 +747,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                   className={inputClass + " resize-none"}
                   placeholder="Holiday hours, seasonal changes, etc."
                 />
+                <p className="text-[12px] text-gray-400 mt-2">Enter each special hour on a new line</p>
               </div>
             </SectionCard>
 
@@ -797,6 +761,7 @@ export default function LandmarkModal({ isOpen, onClose, onSuccess, landmark }: 
                   className={inputClass + " resize-none"}
                   placeholder="Admission prices and details"
                 />
+                <p className="text-[12px] text-gray-400 mt-2">Enter each price on a new line</p>
               </div>
             </SectionCard>
           </div>
