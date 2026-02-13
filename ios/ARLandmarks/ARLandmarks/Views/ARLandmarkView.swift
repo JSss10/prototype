@@ -314,7 +314,11 @@ struct ARLandmarkView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
-                        .background(modeManager.currentMode == mode ? Color.blue : Color.clear)
+                        .background(
+                            modeManager.currentMode == mode
+                                ? AnyShapeStyle(LinearGradient(colors: [.blue, .cyan], startPoint: .leading, endPoint: .trailing))
+                                : AnyShapeStyle(Color.clear)
+                        )
                         .foregroundColor(modeManager.currentMode == mode ? .white : .primary)
                         .cornerRadius(20)
                     }
