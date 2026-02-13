@@ -33,7 +33,12 @@ struct LandmarkListView: View {
         NavigationStack {
             Group {
                 if viewModel.isLoading {
-                    ProgressView("Loading...")
+                    VStack {
+                        Spacer()
+                        GradientLoadingView()
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
                 } else if let error = viewModel.errorMessage {
                     VStack(spacing: 16) {
                         Image(systemName: "exclamationmark.triangle")

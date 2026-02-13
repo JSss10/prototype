@@ -119,7 +119,7 @@ struct ARLandmarkView: View {
                         AsyncImage(url: URL(string: imageUrl)) { phase in
                             switch phase {
                             case .empty:
-                                ProgressView()
+                                GradientImagePlaceholder(height: 180)
                                     .frame(height: 180)
                             case .success(let image):
                                 image
@@ -249,7 +249,7 @@ struct ARLandmarkView: View {
                     AsyncImage(url: URL(string: photos[index].url)) { phase in
                         switch phase {
                         case .empty:
-                            ProgressView()
+                            GradientImagePlaceholder(height: 180, width: 280, cornerRadius: 16)
                                 .frame(width: 280, height: 180)
                         case .success(let image):
                             image

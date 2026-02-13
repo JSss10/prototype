@@ -170,8 +170,9 @@ struct OverviewView: View {
             .disabled(viewModel.landmarks.isEmpty)
 
             if viewModel.isLoading {
-                ProgressView("Loading landmarks...")
+                GradientLoadingView()
                     .padding(.top, 8)
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
             } else if viewModel.errorMessage != nil {
                 Text("Unable to load landmarks")
                     .font(.caption)

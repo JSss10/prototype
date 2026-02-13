@@ -44,15 +44,29 @@ struct SkeletonView: View {
             .fill(
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        Color.gray.opacity(0.2),
-                        Color.gray.opacity(0.3),
-                        Color.gray.opacity(0.2)
+                        Color.blue.opacity(0.08),
+                        Color.cyan.opacity(0.15),
+                        Color.blue.opacity(0.08)
                     ]),
                     startPoint: isAnimating ? .leading : .trailing,
                     endPoint: isAnimating ? .trailing : .leading
                 )
             )
             .frame(width: width, height: height)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                .clear,
+                                Color.white.opacity(0.2),
+                                .clear
+                            ],
+                            startPoint: isAnimating ? .leading : .trailing,
+                            endPoint: isAnimating ? .trailing : .leading
+                        )
+                    )
+            )
             .onAppear {
                 withAnimation(
                     .easeInOut(duration: 1.5)
