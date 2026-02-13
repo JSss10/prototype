@@ -48,9 +48,18 @@ function fromDateInputValue(value: string): string {
   })
 }
 
-function cleanText(text: string | null | undefined): string {
-  if (!text) return ''
-  return text
+function toStr(val: any): string {
+  if (val == null) return ''
+  if (typeof val === 'string') return val
+  if (Array.isArray(val)) return val.join(', ')
+  if (typeof val === 'object') return JSON.stringify(val)
+  return String(val)
+}
+
+function cleanText(text: any): string {
+  const str = toStr(text)
+  if (!str) return ''
+  return str
     .replace(/<[^>]*>/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
@@ -77,9 +86,11 @@ function cleanText(text: string | null | undefined): string {
     .trim()
 }
 
-function cleanOpeningHours(hours: string | null | undefined): string {
+function cleanOpeningHours(hours: any): string {
   if (!hours) return ''
-  let cleaned = hours
+  if (Array.isArray(hours)) return hours.join(', ')
+  const str = String(hours)
+  let cleaned = str
   if (cleaned.startsWith('[')) {
     try {
       const arr = JSON.parse(cleaned)
@@ -93,14 +104,18 @@ function cleanOpeningHours(hours: string | null | undefined): string {
   return cleaned.replace(/"/g, '').trim()
 }
 
-function cleanOpens(opens: string | null | undefined): string {
+function cleanOpens(opens: any): string {
   if (!opens) return ''
-  return opens.replace(/,(?!\s)/g, ', ').trim()
+  const str = Array.isArray(opens) ? opens.join(', ') : String(opens)
+  return str.replace(/,(?!\s)/g, ', ').trim()
 }
 
-function cleanZurichCardDescription(desc: string | null | undefined): string {
+function cleanZurichCardDescription(desc: any): string {
   if (!desc) return ''
-  let text = desc
+  if (typeof desc === 'object' && !Array.isArray(desc)) {
+    return cleanText(desc.en || desc.de || '')
+  }
+  let text = String(desc)
   if (text.startsWith('{')) {
     try {
       const obj = JSON.parse(text)
