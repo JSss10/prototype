@@ -36,7 +36,7 @@ struct ARPositionCalculator {
         // AR coordinates
         let x = Float(arDistance * sin(relativeBearing))
         let z = Float(-arDistance * cos(relativeBearing))
-        let y: Float = 0.3
+        let y: Float = 1.70
 
         return SIMD3<Float>(x, y, z)
     }

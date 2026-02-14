@@ -238,7 +238,7 @@ struct ARViewContainer: UIViewRepresentable {
             let x = arDistance * Float(sin(bearing))
             let z = -arDistance * Float(cos(bearing))
 
-            let y: Float = Float(distance / 5000)
+            let y: Float = 1.70
 
             let position = SIMD3<Float>(x, y, z)
 
