@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="boxGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#0f2440"/>
+    </linearGradient>
+    <linearGradient id="boxGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e5f3a"/>
+      <stop offset="100%" style="stop-color:#0f4024"/>
+    </linearGradient>
+    <linearGradient id="boxGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5f1e5f"/>
+      <stop offset="100%" style="stop-color:#400f40"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05">
+    <line x1="0" y1="0" x2="1920" y2="1080" stroke="#3B82F6" stroke-width="0.5"/>
+    <line x1="1920" y1="0" x2="0" y2="1080" stroke="#3B82F6" stroke-width="0.5"/>
+    <line x1="960" y1="0" x2="960" y2="1080" stroke="#3B82F6" stroke-width="0.5"/>
+    <line x1="0" y1="540" x2="1920" y2="540" stroke="#3B82F6" stroke-width="0.5"/>
+  </g>
+
+  <!-- Title -->
+  <text x="960" y="120" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="bold" fill="url(#accent)" filter="url(#glow)">Was ist AR-Tracking?</text>
+
+  <!-- Subtitle -->
+  <text x="960" y="170" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#94a3b8">Vom Sensor-Input zur augmentierten 3D-Szene</text>
+
+  <!-- Accent line under title -->
+  <rect x="760" y="190" width="400" height="3" rx="1.5" fill="url(#accent)" opacity="0.6"/>
+
+  <!-- ==================== -->
+  <!-- INPUT BLOCK (Left)   -->
+  <!-- ==================== -->
+  <g filter="url(#shadow)">
+    <rect x="120" y="280" width="420" height="520" rx="16" fill="url(#boxGrad1)" stroke="#3B82F6" stroke-width="2" opacity="0.9"/>
+  </g>
+  <text x="330" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="bold" fill="#60a5fa">INPUT</text>
+  <rect x="220" y="345" width="220" height="3" rx="1.5" fill="#3B82F6" opacity="0.4"/>
+
+  <!-- Camera icon -->
+  <rect x="230" y="390" width="60" height="45" rx="8" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+  <circle cx="260" cy="412" r="12" fill="none" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="250" y="382" width="20" height="8" rx="3" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="310" y="405" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">Kamera</text>
+  <text x="310" y="430" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">RGB-Videostream</text>
+
+  <!-- IMU / Sensors icon -->
+  <rect x="235" y="475" width="50" height="50" rx="6" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+  <line x1="260" y1="480" x2="260" y2="520" stroke="#60a5fa" stroke-width="1.5"/>
+  <line x1="240" y1="500" x2="280" y2="500" stroke="#60a5fa" stroke-width="1.5"/>
+  <circle cx="260" cy="500" r="5" fill="#60a5fa"/>
+  <text x="310" y="495" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">IMU-Sensoren</text>
+  <text x="310" y="520" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Gyro, Accelerometer</text>
+
+  <!-- GPS icon -->
+  <circle cx="260" cy="595" r="20" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+  <circle cx="260" cy="595" r="6" fill="#60a5fa"/>
+  <line x1="260" y1="570" x2="260" y2="565" stroke="#60a5fa" stroke-width="2"/>
+  <line x1="260" y1="620" x2="260" y2="625" stroke="#60a5fa" stroke-width="2"/>
+  <line x1="235" y1="595" x2="230" y2="595" stroke="#60a5fa" stroke-width="2"/>
+  <line x1="285" y1="595" x2="290" y2="595" stroke="#60a5fa" stroke-width="2"/>
+  <text x="310" y="590" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">GPS</text>
+  <text x="310" y="615" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Standortdaten</text>
+
+  <!-- LiDAR icon -->
+  <path d="M240,690 L260,670 L280,690" fill="none" stroke="#60a5fa" stroke-width="2.5"/>
+  <path d="M235,705 L260,680 L285,705" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity="0.6"/>
+  <path d="M230,720 L260,690 L290,720" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.3"/>
+  <text x="310" y="695" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">LiDAR</text>
+  <text x="310" y="720" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Tiefendaten (optional)</text>
+
+  <!-- ======================== -->
+  <!-- PROCESSING BLOCK (Center) -->
+  <!-- ======================== -->
+
+  <!-- Arrow 1: Input → Processing -->
+  <line x1="555" y1="540" x2="680" y2="540" stroke="url(#accent)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="680,530 700,540 680,550" fill="#22d3ee"/>
+
+  <g filter="url(#shadow)">
+    <rect x="710" y="280" width="500" height="520" rx="16" fill="url(#boxGrad2)" stroke="#22c55e" stroke-width="2" opacity="0.9"/>
+  </g>
+  <text x="960" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="bold" fill="#4ade80">VERARBEITUNG</text>
+  <rect x="830" y="345" width="260" height="3" rx="1.5" fill="#22c55e" opacity="0.4"/>
+
+  <!-- ARSession -->
+  <rect x="760" y="380" width="400" height="80" rx="12" fill="#0f4024" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="960" y="415" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#4ade80">ARSession</text>
+  <text x="960" y="445" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Koordiniert alle AR-Prozesse</text>
+
+  <!-- Arrow down -->
+  <line x1="960" y1="465" x2="960" y2="490" stroke="#4ade80" stroke-width="2"/>
+  <polygon points="952,488 960,500 968,488" fill="#4ade80"/>
+
+  <!-- ARWorldTrackingConfiguration -->
+  <rect x="760" y="505" width="400" height="80" rx="12" fill="#0f4024" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="960" y="540" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#4ade80">ARWorldTrackingConfig</text>
+  <text x="960" y="568" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Feature Detection &amp; Tracking</text>
+
+  <!-- Arrow down -->
+  <line x1="960" y1="590" x2="960" y2="615" stroke="#4ade80" stroke-width="2"/>
+  <polygon points="952,613 960,625 968,613" fill="#4ade80"/>
+
+  <!-- Visual-Inertial Odometry -->
+  <rect x="760" y="630" width="190" height="70" rx="10" fill="#0f4024" stroke="#4ade80" stroke-width="1"/>
+  <text x="855" y="662" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#4ade80">VIO</text>
+  <text x="855" y="685" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#94a3b8">Visual-Inertial</text>
+
+  <!-- Scene Understanding -->
+  <rect x="970" y="630" width="190" height="70" rx="10" fill="#0f4024" stroke="#4ade80" stroke-width="1"/>
+  <text x="1065" y="662" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="bold" fill="#4ade80">Scene Understanding</text>
+  <text x="1065" y="685" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#94a3b8">Plane Detection</text>
+
+  <!-- Arrow down combined -->
+  <line x1="960" y1="705" x2="960" y2="730" stroke="#4ade80" stroke-width="2"/>
+  <polygon points="952,728 960,740 968,728" fill="#4ade80"/>
+
+  <!-- ARAnchor -->
+  <rect x="810" y="740" width="300" height="45" rx="10" fill="#0f4024" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="960" y="770" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#4ade80">ARAnchor-Erzeugung</text>
+
+  <!-- ==================== -->
+  <!-- OUTPUT BLOCK (Right) -->
+  <!-- ==================== -->
+
+  <!-- Arrow 2: Processing → Output -->
+  <line x1="1225" y1="540" x2="1350" y2="540" stroke="url(#accent)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="1350,530 1370,540 1350,550" fill="#22d3ee"/>
+
+  <g filter="url(#shadow)">
+    <rect x="1380" y="280" width="420" height="520" rx="16" fill="url(#boxGrad3)" stroke="#a855f7" stroke-width="2" opacity="0.9"/>
+  </g>
+  <text x="1590" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="bold" fill="#c084fc">OUTPUT</text>
+  <rect x="1480" y="345" width="220" height="3" rx="1.5" fill="#a855f7" opacity="0.4"/>
+
+  <!-- 3D Scene -->
+  <!-- Cube wireframe -->
+  <polygon points="1470,430 1530,400 1590,430 1530,460" fill="none" stroke="#c084fc" stroke-width="2"/>
+  <polygon points="1470,430 1530,460 1530,510 1470,480" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.7"/>
+  <polygon points="1590,430 1530,460 1530,510 1590,480" fill="none" stroke="#c084fc" stroke-width="1.5" opacity="0.7"/>
+  <text x="1590" y="470" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">3D-Szene</text>
+  <text x="1590" y="498" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">SCNScene / RealityKit</text>
+
+  <!-- Info Overlay -->
+  <rect x="1450" y="540" width="45" height="30" rx="5" fill="none" stroke="#c084fc" stroke-width="2"/>
+  <rect x="1455" y="545" width="35" height="4" rx="1" fill="#c084fc" opacity="0.5"/>
+  <rect x="1455" y="553" width="25" height="4" rx="1" fill="#c084fc" opacity="0.3"/>
+  <rect x="1455" y="561" width="30" height="4" rx="1" fill="#c084fc" opacity="0.4"/>
+  <text x="1515" y="555" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">Info-Overlay</text>
+  <text x="1515" y="580" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Landmark-Details</text>
+
+  <!-- AR Annotations -->
+  <circle cx="1472" cy="650" r="15" fill="none" stroke="#c084fc" stroke-width="2"/>
+  <circle cx="1472" cy="650" r="5" fill="#c084fc"/>
+  <line x1="1472" y1="635" x2="1490" y2="620" stroke="#c084fc" stroke-width="1.5"/>
+  <rect x="1490" y="612" width="50" height="16" rx="4" fill="#c084fc" opacity="0.3"/>
+  <text x="1515" y="648" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">AR-Annotation</text>
+  <text x="1515" y="673" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Positionierte Labels</text>
+
+  <!-- User Interaction -->
+  <circle cx="1472" cy="745" r="18" fill="none" stroke="#c084fc" stroke-width="1.5"/>
+  <circle cx="1472" cy="738" r="6" fill="none" stroke="#c084fc" stroke-width="1.5"/>
+  <path d="M1458,758 Q1472,750 1486,758" fill="none" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="1515" y="742" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#e2e8f0">Interaktion</text>
+  <text x="1515" y="767" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">Tap, Drag, Info</text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="1050" width="1920" height="30" fill="url(#accent)" opacity="0.15"/>
+  <text x="960" y="1070" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#64748b">Kapitel 3 – ARKit-Grundlagen</text>
+
+</svg>
