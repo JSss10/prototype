@@ -1,6 +1,6 @@
 # AR Landmarks Zurich – Leaflet
 
-Vollständiger akademischer Text mit Harvard ARU Kurzbelegen – aufgeteilt auf die Layout-Sektionen.
+Texte für das Leaflet-Layout – ergebnisorientiert, mit expliziten Lernzyklen und gebündelter Reflexion.
 
 ---
 
@@ -23,35 +23,29 @@ B.Sc. Web Development | Advanced Specialised Project (ASP) – Leaflet | SAE Ins
 
 ### Projektübersicht (rechts oben)
 
-Das Medienprodukt des Advanced Specialised Projects ist AR Landmarks Zurich – eine iOS-Applikation, die Zürcher Sehenswürdigkeiten in Echtzeit über die Kamera erkennt und kontextbezogene Informationen als Augmented-Reality-Overlay einblendet. Ergänzt wird die App durch ein webbasiertes Dashboard zur Verwaltung der Landmark-Daten sowie eine Machine-Learning-Pipeline zum Trainieren des Erkennungsmodells.
-
-Das Konzept von Augmented Reality (AR) beschreibt die Überlagerung der realen Umgebung mit computergenerierten virtuellen Objekten in Echtzeit (Azuma, 1997). Die vorliegende Applikation nutzt dieses Prinzip, um Nutzer:innen beim Erkunden der Stadt Zürich einen informationsreichen Mehrwert zu bieten. Im Gegensatz zu klassischen Reiseführer-Apps, die auf GPS-basierte Standortabfragen setzen, kombiniert AR Landmarks Zurich visuelle Erkennung durch maschinelles Lernen mit AR-gestützter Darstellung – ein Ansatz, der laut Cao et al. (2023) zunehmend an Bedeutung für mobile Anwendungen gewinnt.
+AR Landmarks Zurich ist eine iOS-App, die Zürcher Sehenswürdigkeiten in Echtzeit über die Kamera erkennt und kontextbezogene Informationen als Augmented-Reality-Overlay einblendet (Azuma, 1997). Im Gegensatz zu GPS-basierten Reiseführer-Apps setzt AR Landmarks auf visuelle Erkennung durch maschinelles Lernen – ein Ansatz, der laut Cao et al. (2023) zunehmend an Bedeutung gewinnt. Das Projekt umfasst drei Komponenten: die iOS-App, ein Web-Dashboard zur Datenverwaltung und eine ML-Training-Pipeline.
 
 ---
 
-### Lernerfolge & Reflexion (rechts mitte)
+### Iteratives Vorgehen & Lernerfolge (rechts mitte)
 
-**Bildklassifikation mit Transfer Learning**
+**ML-Modell: Drei Iterationszyklen bis zum Ergebnis**
 
-Das Herzstück der App ist ein Bildklassifikationsmodell auf Basis der MobileNetV3-Small-Architektur (Howard et al., 2019). MobileNetV3 wurde mittels einer Kombination aus Hardware-aware Network Architecture Search (NAS) und dem NetAdapt-Algorithmus gezielt für den Einsatz auf mobilen Endgeräten optimiert (Howard et al., 2019, pp. 1314-1315). Die Wahl fiel bewusst auf diese Architektur, da sie bei geringer Modellgrösse (ca. 2-5 MB) und minimaler Inferenzzeit (<50 ms auf dem iPhone) eine ausreichend hohe Erkennungsgenauigkeit ermöglicht.
+Das Erkennungsmodell durchlief drei klar abgegrenzte Iterationszyklen:
 
-Für das Training wurde Transfer Learning eingesetzt – ein Ansatz, bei dem ein bereits auf grossen Datensätzen (z. B. ImageNet) vortrainiertes Modell auf eine neue, spezifischere Aufgabe angepasst wird (Pan und Yang, 2010). Dieses Verfahren ist besonders vorteilhaft, wenn nur begrenzte Trainingsdaten verfügbar sind (Pan und Yang, 2010, p. 1346), was im vorliegenden Projekt der Fall war: Pro Sehenswürdigkeit standen zwischen 20 und 50 Bilder zur Verfügung. Die Training-Pipeline wurde in Python mit PyTorch umgesetzt und umfasst automatisiertes Data Augmentation (Spiegelungen, Rotationen, Farbverschiebungen), um die Generalisierungsfähigkeit des Modells zu verbessern.
+*Zyklus 1 – Baseline:* Erster Trainingsversuch mit MobileNetV3-Small (Howard et al., 2019) und Transfer Learning (Pan und Yang, 2010) auf 20–50 Bildern pro Landmark. Ergebnis: ~60% Genauigkeit. Erkenntnis: Die Trainingsdaten waren zu wenig divers.
 
-Lernerfolg: Ich habe gelernt, ein praxistaugliches ML-Modell mit begrenzten Daten zu trainieren, den gesamten Workflow von der Datensammlung über das Training bis zur Konvertierung ins Core-ML-Format selbständig umzusetzen und dabei die Stellschrauben (Epochen, Lernrate, Dropout) systematisch zu evaluieren.
+*Zyklus 2 – Data Augmentation:* Einführung von automatisierten Bildtransformationen (Spiegelungen, Rotationen, Farbverschiebungen) in der PyTorch-Pipeline. Ergebnis: Genauigkeit stieg auf ~70%. Erkenntnis: Augmentation verbessert die Generalisierung deutlich, aber Verwechslungen bei ähnlichen Gebäuden blieben.
 
-**iOS-Entwicklung mit SwiftUI, ARKit und Core ML**
+*Zyklus 3 – Fine-Tuning & Evaluation:* Systematische Anpassung von Lernrate, Epochenzahl und Dropout. Analyse der Confusion Matrix zur gezielten Verbesserung. Ergebnis: 75%+ Genauigkeit bei <50 ms Inferenzzeit auf dem iPhone.
 
-Die iOS-App wurde vollständig in Swift mit SwiftUI als deklarativem UI-Framework entwickelt. Die Integration des trainierten Modells erfolgte über Core ML, Apples Framework für maschinelles Lernen auf dem Gerät, welches die Privatsphäre der Nutzer:innen schützt, da sämtliche Bilddaten lokal verarbeitet werden und das Gerät nicht verlassen (Apple Inc., 2024a). Die AR-Funktionalität basiert auf ARKit, das eine präzise Erfassung der realen Umgebung über die Kamera und die Gerätesensoren ermöglicht (Apple Inc., 2024b).
+**iOS-App: Vom Prototyp zur modularen Architektur**
 
-Die App-Architektur folgt dem MVVM-Pattern (Model-View-ViewModel) und ist modular aufgebaut: Services für Supabase-Datenbankanbindung, Vision (ML-basierte Erkennung), Wetter-API, Standortdienste und AR-Positionierung sind voneinander getrennt. Diese Architektur erleichtert sowohl die Wartbarkeit als auch die Erweiterbarkeit des Codes.
+Die App startete als einfacher Kamera-View mit ML-Erkennung. Durch iterative Erweiterung entstand eine modulare MVVM-Architektur mit getrennten Services für Datenbank, Vision, Wetter-API, Standort und AR-Positionierung. Die Landmark-Erkennung läuft vollständig On-Device über Core ML (Apple Inc., 2024a), die AR-Darstellung nutzt ARKit (Apple Inc., 2024b). Besonders herausfordernd war die korrekte räumliche Positionierung der Overlays – ein Problem, das ich durch schrittweises Testen an verschiedenen Standorten und Lichtverhältnissen iterativ löste.
 
-Lernerfolg: Ich habe vertiefte Kenntnisse in der nativen iOS-Entwicklung mit SwiftUI erworben und gelernt, wie Core ML und ARKit zusammenarbeiten, um ein reaktives AR-Erlebnis auf dem iPhone zu realisieren. Besonders herausfordernd war die korrekte räumliche Positionierung der AR-Overlays relativ zu den erkannten Sehenswürdigkeiten.
+**Web-Dashboard & Backend**
 
-**Web-Dashboard und Backend**
-
-Das Verwaltungs-Dashboard wurde als Next.js-Applikation mit React und TypeScript umgesetzt. Es ermöglicht authentifizierten Nutzer:innen, Sehenswürdigkeiten zu erstellen, zu bearbeiten und mit Bildern zu versehen. Als Backend-as-a-Service kommt Supabase zum Einsatz, das eine PostgreSQL-Datenbank, Authentifizierung (OAuth mit Google) und Row Level Security (RLS) bereitstellt (Supabase, 2024). Die Landmark-Daten werden über die Zurich Tourism API synchronisiert und umfassen aktuell 108 Zürcher Sehenswürdigkeiten.
-
-Lernerfolg: Ich habe gelernt, ein Full-Stack-System mit getrenntem Frontend, Backend und ML-Pipeline zu konzipieren und umzusetzen. Die Arbeit mit Supabase hat mir gezeigt, wie moderne BaaS-Lösungen den Entwicklungsprozess beschleunigen können, ohne auf Sicherheitsaspekte wie RLS zu verzichten.
+Das Dashboard (Next.js, React, TypeScript) und das Supabase-Backend (PostgreSQL, OAuth, RLS) wurden parallel zur App entwickelt (Supabase, 2024). Die Datenverwaltung für 108 Zürcher Sehenswürdigkeiten entstand schrittweise: erst manuelle Einträge, dann API-Synchronisation mit Zurich Tourism, schliesslich Bild-Upload und -Verwaltung.
 
 ---
 
@@ -67,31 +61,50 @@ Lernerfolg: Ich habe gelernt, ein Full-Stack-System mit getrenntem Frontend, Bac
 
 ### Das Medienprodukt (links oben)
 
-**Fachkompetenz und Relevanz**
+AR Landmarks Zurich besteht aus drei Komponenten:
 
-Das Projekt vereint mehrere Fachbereiche: Mobile App-Entwicklung, maschinelles Lernen, Augmented Reality und Web-Entwicklung. Die Kombination von visueller Landmark-Erkennung mit AR-Overlays geht dabei über die Inhalte der SAE-Diplomastufe hinaus und greift einen Trend auf, den Le et al. (2021) als vielversprechend für den mobilen Einsatz von ML und AR bewerten. Durch die durchgängige Bearbeitung aller Projektteile – vom Daten-Scraping über das ML-Training bis zur nativen iOS-App – habe ich eine breite technische Kompetenz aufgebaut, die in der Medienbranche zunehmend gefragt ist.
+**iOS-App** (Swift, SwiftUI, Core ML, ARKit) – Erkennung und AR-Darstellung von Zürcher Sehenswürdigkeiten in Echtzeit auf dem iPhone.
 
-Die erworbenen Fähigkeiten in Swift/SwiftUI, Core ML, ARKit, Python/PyTorch und Next.js/React bilden eine solide Grundlage für eine Tätigkeit im Bereich iOS-Entwicklung, AR-Anwendungen oder Machine-Learning-Engineering.
+**Web-Dashboard** (Next.js, React, TypeScript) – Verwaltung der 108 Landmarks mit Bildern, Beschreibungen und Metadaten.
+
+**ML-Pipeline** (Python, PyTorch) – Training des MobileNetV3-Klassifikationsmodells mit Transfer Learning, Data Augmentation und Konvertierung ins Core-ML-Format.
+
+Das Projekt geht über die Inhalte der SAE-Diplomastufe hinaus und greift einen Trend auf, den Le et al. (2021) als vielversprechend für den mobilen Einsatz von ML und AR bewerten.
 
 ---
 
-### Erworbene Fachkompetenzen (links unten, 4 Boxen)
+### Reflexion: Was ich gelernt habe – und wie (links unten)
+
+Dieses Projekt war mein erster durchgängiger Entwicklungszyklus von der Datensammlung über das ML-Training bis zur nativen iOS-App. Drei zentrale Erkenntnisse:
+
+**1. Iteratives Arbeiten ist keine Methode, sondern eine Notwendigkeit.**
+Kein Teilsystem funktionierte beim ersten Versuch wie geplant. Das ML-Modell brauchte drei Trainingszyklen, die AR-Positionierung erforderte wiederholtes Testen vor Ort, das Dashboard wuchs mit den Anforderungen der App. Ich habe gelernt, Zwischenergebnisse systematisch zu evaluieren und daraus die nächsten Schritte abzuleiten – statt auf ein fertiges Konzept zu warten.
+
+**2. Theorie wird erst durch Anwendung greifbar.**
+Transfer Learning (Pan und Yang, 2010) und AR-Konzepte (Azuma, 1997) kannte ich aus der Literatur. Erst die praktische Umsetzung – warum eine bestimmte Lernrate versagt, wie Lichtverhältnisse die Erkennung beeinflussen – hat das Wissen verankert.
+
+**3. Full-Stack heisst, Schnittstellen zu denken.**
+Die grösste Herausforderung war nicht die einzelne Technologie, sondern das Zusammenspiel: Wie kommen Trainingsdaten vom Dashboard ins Modell? Wie wird ein Core-ML-Modell in die App integriert? Diese Schnittstellenkompetenz betrachte ich als den wichtigsten Lernerfolg.
+
+---
+
+### Erworbene Fachkompetenzen (rechts oben, 4 Boxen)
 
 **Mobile App-Entwicklung**
 Native iOS-Entwicklung mit Swift und SwiftUI, Integration von ARKit für Augmented Reality und Core ML für On-Device Machine Learning.
 
 **Backend & Datenbanken**
-Aufbau eines Full-Stack-Systems mit Supabase (PostgreSQL, OAuth, RLS), API-Synchronisation und serverseitiger Datenverwaltung via Next.js.
+Full-Stack-System mit Supabase (PostgreSQL, OAuth, RLS), API-Synchronisation und serverseitiger Datenverwaltung via Next.js.
 
 **Machine Learning**
-Training eines MobileNetV3-Klassifikationsmodells mit Transfer Learning (Pan und Yang, 2010) in PyTorch, inklusive Data Augmentation und Konvertierung ins Core-ML-Format.
+MobileNetV3-Klassifikationsmodell mit Transfer Learning in PyTorch, Data Augmentation, Hyperparameter-Tuning und Core-ML-Konvertierung.
 
-**Dokumentation & Methodik**
-Strukturierte Projektdokumentation, systematische Evaluation von Modellparametern und methodisches Vorgehen bei der iterativen Weiterentwicklung.
+**Iterative Entwicklung**
+Systematische Evaluation von Zwischenergebnissen, datengetriebene Entscheidungsfindung und schrittweise Optimierung über mehrere Entwicklungszyklen.
 
 ---
 
-### Im Leaflet zitierte Quellen (rechts oben)
+### Im Leaflet zitierte Quellen (rechts mitte)
 
 Apple Inc. (2024a) *Core ML*. Available at: https://developer.apple.com/documentation/coreml (Accessed: 15 February 2026).
 
@@ -111,19 +124,19 @@ Supabase (2024) *Supabase documentation*. Available at: https://supabase.com/doc
 
 ---
 
-### Weitere im Projekt verwendete Quellen (rechts mitte)
+### Weitere im Projekt verwendete Quellen (rechts unten)
 
 Apple Inc. (2024) *Create ML*. Available at: https://developer.apple.com/documentation/createml (Accessed: 15 February 2026).
-Verwendet zum Vergleich mit der eigenen PyTorch-Pipeline; Create ML bietet eine vereinfachte Alternative für das Modelltraining direkt auf dem Mac, wurde jedoch zugunsten grösserer Flexibilität und Kontrolle über Hyperparameter nicht eingesetzt.
+Verwendet zum Vergleich mit der eigenen PyTorch-Pipeline; Create ML wurde zugunsten grösserer Flexibilität nicht eingesetzt.
 
 Apple Inc. (2024) *SwiftUI*. Available at: https://developer.apple.com/documentation/swiftui (Accessed: 15 February 2026).
-Primäre Referenz für die Entwicklung der Benutzeroberfläche der iOS-App. SwiftUI ermöglichte als deklaratives Framework eine effiziente und wartbare UI-Entwicklung.
+Primäre Referenz für die deklarative UI-Entwicklung der iOS-App.
 
 Plested, J., Phiri, L. and Gedeon, T. (2022) 'Deep transfer learning for image classification: a survey', *arXiv preprint arXiv:2205.09904*. Available at: https://arxiv.org/abs/2205.09904 (Accessed: 15 February 2026).
-Überblick über aktuelle Transfer-Learning-Ansätze für Bildklassifikation. Diente der Evaluation verschiedener Strategien (Feature Extraction vs. Fine-Tuning) im Kontext des eigenen Projekts.
+Diente der Evaluation von Feature Extraction vs. Fine-Tuning im Kontext des Projekts.
 
 PyTorch (2024) *PyTorch documentation*. Available at: https://pytorch.org/docs/stable/ (Accessed: 15 February 2026).
-Zentrale Dokumentation für das Training des Bildklassifikationsmodells, insbesondere für den Einsatz von torchvision.models und die Konfiguration des Trainingsprozesses.
+Zentrale Dokumentation für das Modelltraining mit torchvision.models.
 
 Vercel (2024) *Next.js documentation*. Available at: https://nextjs.org/docs (Accessed: 15 February 2026).
-Referenz für die Entwicklung des Web-Dashboards mit Next.js App Router, Server Components und API Routes.
+Referenz für das Web-Dashboard mit Next.js App Router und Server Components.
