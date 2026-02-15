@@ -33,11 +33,11 @@ AR Landmarks Zurich ist eine iOS-App, die Zürcher Sehenswürdigkeiten in Echtze
 
 Das Erkennungsmodell durchlief drei klar abgegrenzte Iterationszyklen:
 
-*Zyklus 1 – Baseline:* Erster Trainingsversuch mit MobileNetV3-Small (Howard et al., 2019) und Transfer Learning (Pan und Yang, 2010) auf 20–50 Bildern pro Landmark. Ergebnis: ~60% Genauigkeit. Erkenntnis: Die Trainingsdaten waren zu wenig divers.
+*Zyklus 1 – Baseline:* MobileNetV3-Small (Howard et al., 2019) mit Transfer Learning (Pan und Yang, 2010), 20–50 Bilder pro Landmark. Ergebnis: ~60%. Erkenntnis: Trainingsdaten zu wenig divers.
 
-*Zyklus 2 – Data Augmentation:* Einführung von automatisierten Bildtransformationen (Spiegelungen, Rotationen, Farbverschiebungen) in der PyTorch-Pipeline. Ergebnis: Genauigkeit stieg auf ~70%. Erkenntnis: Augmentation verbessert die Generalisierung deutlich, aber Verwechslungen bei ähnlichen Gebäuden blieben.
+*Zyklus 2 – Data Augmentation:* Automatisierte Bildtransformationen (Spiegelungen, Rotationen, Farbverschiebungen). Ergebnis: ~70%. Erkenntnis: Bessere Generalisierung, aber Verwechslungen bei ähnlichen Gebäuden.
 
-*Zyklus 3 – Fine-Tuning & Evaluation:* Systematische Anpassung von Lernrate, Epochenzahl und Dropout. Analyse der Confusion Matrix zur gezielten Verbesserung. Ergebnis: 75%+ Genauigkeit bei <50 ms Inferenzzeit auf dem iPhone.
+*Zyklus 3 – Fine-Tuning:* Systematische Anpassung von Lernrate, Epochenzahl und Dropout; Confusion-Matrix-Analyse. Ergebnis: 75%+ Genauigkeit bei <50 ms Inferenzzeit.
 
 **iOS-App: Vom Prototyp zur modularen Architektur**
 
