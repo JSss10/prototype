@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="960" y="100" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="bold" fill="url(#accent)" filter="url(#glow)">5 Key Learnings</text>
+  <text x="960" y="148" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#94a3b8">Von Web-Entwicklung zu iOS &amp; AR – Was ich gelernt habe</text>
+  <rect x="760" y="168" width="400" height="3" rx="1.5" fill="url(#accent)" opacity="0.5"/>
+
+  <!-- =================== -->
+  <!-- Learning 1           -->
+  <!-- =================== -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="220" width="1520" height="120" rx="16" fill="#111827" stroke="#3B82F6" stroke-width="2"/>
+  </g>
+  <!-- Number badge -->
+  <circle cx="280" cy="280" r="32" fill="#1e3a5f" stroke="#60a5fa" stroke-width="2"/>
+  <text x="280" y="292" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#60a5fa">1</text>
+  <!-- Text -->
+  <text x="340" y="270" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#e2e8f0">SwiftUI + MVVM sind intuitiv für Web-Entwickler</text>
+  <text x="340" y="305" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#94a3b8">Deklarative Syntax erinnert an React – schneller Einstieg durch bekannte Patterns</text>
+
+  <!-- =================== -->
+  <!-- Learning 2           -->
+  <!-- =================== -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="370" width="1520" height="120" rx="16" fill="#111827" stroke="#22c55e" stroke-width="2"/>
+  </g>
+  <circle cx="280" cy="430" r="32" fill="#0f4024" stroke="#4ade80" stroke-width="2"/>
+  <text x="280" y="442" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#4ade80">2</text>
+  <text x="340" y="420" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#e2e8f0">ARKit + GPS = mächtig, aber herausfordernd</text>
+  <text x="340" y="455" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#94a3b8">Genauigkeit in urbanen Umgebungen bleibt eine zentrale Herausforderung</text>
+
+  <!-- =================== -->
+  <!-- Learning 3           -->
+  <!-- =================== -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="520" width="1520" height="120" rx="16" fill="#111827" stroke="#a855f7" stroke-width="2"/>
+  </g>
+  <circle cx="280" cy="580" r="32" fill="#2d1854" stroke="#c084fc" stroke-width="2"/>
+  <text x="280" y="592" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#c084fc">3</text>
+  <text x="340" y="570" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#e2e8f0">Swift Concurrency ist essenziell</text>
+  <text x="340" y="605" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#94a3b8">Actors und @MainActor garantieren Thread-sichere Apps – kein optionales Feature</text>
+
+  <!-- =================== -->
+  <!-- Learning 4           -->
+  <!-- =================== -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="670" width="1520" height="120" rx="16" fill="#111827" stroke="#f97316" stroke-width="2"/>
+  </g>
+  <circle cx="280" cy="730" r="32" fill="#401a0f" stroke="#fb923c" stroke-width="2"/>
+  <text x="280" y="742" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#fb923c">4</text>
+  <text x="340" y="720" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#e2e8f0">Gutes API-Design macht den Unterschied</text>
+  <text x="340" y="755" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#94a3b8">Retry-Logik und Caching trennen fragile Prototypen von robusten Apps</text>
+
+  <!-- =================== -->
+  <!-- Learning 5           -->
+  <!-- =================== -->
+  <g filter="url(#shadow)">
+    <rect x="200" y="820" width="1520" height="120" rx="16" fill="#111827" stroke="#ef4444" stroke-width="2"/>
+  </g>
+  <circle cx="280" cy="880" r="32" fill="#3f0f0f" stroke="#f87171" stroke-width="2"/>
+  <text x="280" y="892" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#f87171">5</text>
+  <text x="340" y="870" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="bold" fill="#e2e8f0">Echte Geräte-Tests sind nicht optional</text>
+  <text x="340" y="905" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#94a3b8">AR-Entwicklung erfordert physische Geräte – der Simulator reicht nicht aus</text>
+
+  <!-- Bottom label -->
+  <text x="960" y="1010" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#475569">Kapitel 7 – Fazit &amp; Reflexion</text>
+
+</svg>

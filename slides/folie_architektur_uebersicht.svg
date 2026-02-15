@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316"/>
+      <stop offset="100%" style="stop-color:#ea580c"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowStrong">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="960" y="90" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="bold" fill="url(#accent)" filter="url(#glow)">Architektur-Übersicht</text>
+  <text x="960" y="130" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#94a3b8">Datenfluss zwischen App, Backend und externen APIs</text>
+  <rect x="760" y="148" width="400" height="3" rx="1.5" fill="url(#accent)" opacity="0.5"/>
+
+  <!-- ======================== -->
+  <!-- CENTER: iOS App (Hero)   -->
+  <!-- ======================== -->
+  <g filter="url(#shadow)">
+    <rect x="710" y="250" width="500" height="300" rx="24" fill="#111827" stroke="#3B82F6" stroke-width="3"/>
+  </g>
+  <!-- Phone outline -->
+  <rect x="910" y="270" width="80" height="140" rx="12" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.4"/>
+  <rect x="935" y="275" width="30" height="4" rx="2" fill="#60a5fa" opacity="0.3"/>
+  <circle cx="950" cy="400" r="5" fill="none" stroke="#60a5fa" stroke-width="1" opacity="0.3"/>
+
+  <text x="960" y="320" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="bold" fill="#e2e8f0">ARLandmarks</text>
+  <text x="960" y="355" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#60a5fa">iOS App</text>
+
+  <!-- Inner components -->
+  <rect x="750" y="390" width="130" height="50" rx="8" fill="#1e3a5f" stroke="#3B82F6" stroke-width="1"/>
+  <text x="815" y="421" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#93c5fd">ARKit / SceneKit</text>
+
+  <rect x="895" y="390" width="130" height="50" rx="8" fill="#1e3a5f" stroke="#3B82F6" stroke-width="1"/>
+  <text x="960" y="421" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#93c5fd">Core ML / Vision</text>
+
+  <rect x="1040" y="390" width="130" height="50" rx="8" fill="#1e3a5f" stroke="#3B82F6" stroke-width="1"/>
+  <text x="1105" y="421" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#93c5fd">SwiftUI / MVVM</text>
+
+  <rect x="750" y="460" width="200" height="50" rx="8" fill="#1e3a5f" stroke="#3B82F6" stroke-width="1"/>
+  <text x="850" y="491" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#93c5fd">LocationService (GPS)</text>
+
+  <rect x="965" y="460" width="200" height="50" rx="8" fill="#1e3a5f" stroke="#3B82F6" stroke-width="1"/>
+  <text x="1065" y="491" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#93c5fd">SupabaseService</text>
+
+  <!-- ======================== -->
+  <!-- LEFT: Supabase            -->
+  <!-- ======================== -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="340" width="440" height="400" rx="20" fill="#0f2440" stroke="#22c55e" stroke-width="2.5"/>
+  </g>
+
+  <!-- Supabase logo placeholder -->
+  <circle cx="170" cy="400" r="28" fill="#1e5f3a" stroke="#4ade80" stroke-width="2"/>
+  <text x="170" y="408" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#4ade80">S</text>
+
+  <text x="215" y="395" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#4ade80">Supabase</text>
+  <text x="215" y="420" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#86efac">Backend-as-a-Service</text>
+
+  <rect x="120" y="440" width="360" height="2" rx="1" fill="#22c55e" opacity="0.3"/>
+
+  <!-- DB icon + items -->
+  <rect x="130" y="470" width="30" height="22" rx="5" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+  <ellipse cx="145" cy="470" rx="15" ry="5" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="175" y="487" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="bold" fill="#e2e8f0">PostgreSQL-Datenbank</text>
+
+  <text x="175" y="525" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- landmarks (Name, Koordinaten, Kategorie)</text>
+  <text x="175" y="555" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Farben, Beschreibung, Bilder</text>
+  <text x="175" y="585" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Row Level Security (RLS)</text>
+
+  <rect x="120" y="610" width="360" height="2" rx="1" fill="#22c55e" opacity="0.15"/>
+
+  <!-- Auth -->
+  <text x="140" y="645" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#86efac">Auth</text>
+  <text x="200" y="645" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">OAuth / E-Mail Login</text>
+
+  <!-- Real-time -->
+  <text x="140" y="680" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#86efac">REST API</text>
+  <text x="240" y="680" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">CRUD-Operationen</text>
+
+  <!-- Sync badge -->
+  <rect x="140" y="705" width="340" height="25" rx="6" fill="#0f4024" stroke="#22c55e" stroke-width="1" opacity="0.6"/>
+  <text x="310" y="723" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#86efac">Sync via scripts/sync-zurich-pois.js</text>
+
+  <!-- ======================== -->
+  <!-- RIGHT: OpenWeather        -->
+  <!-- ======================== -->
+  <g filter="url(#shadow)">
+    <rect x="1400" y="340" width="440" height="400" rx="20" fill="#40200f" stroke="#f97316" stroke-width="2.5"/>
+  </g>
+
+  <!-- Weather icon -->
+  <circle cx="1490" cy="395" r="18" fill="none" stroke="#fb923c" stroke-width="2.5"/>
+  <line x1="1490" y1="370" x2="1490" y2="365" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1490" y1="420" x2="1490" y2="425" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1465" y1="395" x2="1460" y2="395" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1515" y1="395" x2="1520" y2="395" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1472" y1="377" x2="1468" y2="373" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1508" y1="413" x2="1512" y2="417" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1508" y1="377" x2="1512" y2="373" stroke="#fb923c" stroke-width="2"/>
+  <line x1="1472" y1="413" x2="1468" y2="417" stroke="#fb923c" stroke-width="2"/>
+
+  <text x="1530" y="393" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="#fb923c">OpenWeather</text>
+  <text x="1530" y="418" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#fdba74">Externe REST API</text>
+
+  <rect x="1440" y="440" width="360" height="2" rx="1" fill="#f97316" opacity="0.3"/>
+
+  <!-- API items -->
+  <text x="1460" y="480" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="bold" fill="#e2e8f0">Wetterdaten</text>
+
+  <text x="1460" y="520" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Aktuelle Temperatur</text>
+  <text x="1460" y="550" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Wetterbedingungen (Icon)</text>
+  <text x="1460" y="580" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Sichtweite / Luftfeuchtigkeit</text>
+  <text x="1460" y="610" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Wind / Bewölkung</text>
+
+  <rect x="1440" y="635" width="360" height="2" rx="1" fill="#f97316" opacity="0.15"/>
+
+  <text x="1460" y="670" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="bold" fill="#fdba74">Integration</text>
+  <text x="1460" y="700" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- WeatherService.swift</text>
+  <text x="1460" y="725" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#94a3b8">- Retry-Logik + Caching</text>
+
+  <!-- ============================= -->
+  <!-- ARROWS: App ↔ Supabase         -->
+  <!-- ============================= -->
+  <!-- Arrow App → Supabase -->
+  <line x1="710" y1="440" x2="530" y2="440" stroke="#4ade80" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <polygon points="535,432 520,440 535,448" fill="#4ade80"/>
+  <!-- Label -->
+  <rect x="560" y="415" width="140" height="26" rx="6" fill="#0f4024"/>
+  <text x="630" y="433" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#4ade80">Landmark-Daten</text>
+
+  <!-- Arrow Supabase → App -->
+  <line x1="520" y1="490" x2="700" y2="490" stroke="#4ade80" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <polygon points="695,482 710,490 695,498" fill="#4ade80"/>
+  <!-- Label -->
+  <rect x="560" y="470" width="140" height="26" rx="6" fill="#0f4024"/>
+  <text x="630" y="488" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#4ade80">Auth + CRUD</text>
+
+  <!-- ============================= -->
+  <!-- ARROWS: App ↔ OpenWeather      -->
+  <!-- ============================= -->
+  <!-- Arrow App → OpenWeather -->
+  <line x1="1210" y1="440" x2="1390" y2="440" stroke="#fb923c" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <polygon points="1385,432 1400,440 1385,448" fill="#fb923c"/>
+  <!-- Label -->
+  <rect x="1240" y="415" width="120" height="26" rx="6" fill="#40200f"/>
+  <text x="1300" y="433" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#fb923c">API Request</text>
+
+  <!-- Arrow OpenWeather → App -->
+  <line x1="1400" y1="490" x2="1220" y2="490" stroke="#fb923c" stroke-width="2.5" stroke-dasharray="8,4"/>
+  <polygon points="1225,482 1210,490 1225,498" fill="#fb923c"/>
+  <!-- Label -->
+  <rect x="1240" y="470" width="120" height="26" rx="6" fill="#40200f"/>
+  <text x="1300" y="488" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="bold" fill="#fb923c">Wetterdaten</text>
+
+  <!-- ======================== -->
+  <!-- BOTTOM: Data flow labels -->
+  <!-- ======================== -->
+  <rect x="260" y="810" width="300" height="80" rx="12" fill="#111827" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="410" y="843" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#4ade80">Datenbank-Schicht</text>
+  <text x="410" y="870" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#94a3b8">Persistente Landmark-Verwaltung</text>
+
+  <rect x="810" y="810" width="300" height="80" rx="12" fill="#111827" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="960" y="843" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#60a5fa">Präsentations-Schicht</text>
+  <text x="960" y="870" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#94a3b8">AR-Visualisierung + SwiftUI</text>
+
+  <rect x="1360" y="810" width="300" height="80" rx="12" fill="#111827" stroke="#f97316" stroke-width="1.5"/>
+  <text x="1510" y="843" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#fb923c">Externe API-Schicht</text>
+  <text x="1510" y="870" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#94a3b8">Kontextdaten (Wetter)</text>
+
+  <!-- Connecting lines bottom -->
+  <line x1="410" y1="810" x2="410" y2="780" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <line x1="410" y1="780" x2="300" y2="740" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <line x1="960" y1="810" x2="960" y2="560" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <line x1="1510" y1="810" x2="1510" y2="780" stroke="#f97316" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+  <line x1="1510" y1="780" x2="1620" y2="740" stroke="#f97316" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- Bottom bar -->
+  <text x="960" y="960" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#475569">Kapitel 4 – API-Integration</text>
+
+</svg>
